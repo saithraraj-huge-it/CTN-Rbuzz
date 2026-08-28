@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "841712161902",
+    "project_id": "ctnrbuzz-8635d",
+    "storage_bucket": "ctnrbuzz-8635d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841712161902:android:f582f66d08ee7c9384027f",
+        "android_client_info": {
+          "package_name": "com.myapp" 
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYN88RQSz82ekW3xapt8P1Z4oUsoVB4-A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

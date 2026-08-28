@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Allow HTTP to a specific domain or IP -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">117.241.29.133</domain>
+    </domain-config>
+
+    <!-- Base config to allow system/user trusted certs -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
