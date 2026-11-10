@@ -34,7 +34,7 @@ function ChannelScreen({ navigation }) {
     Toast.show({
       type: 'success',
       text1: 'There is no live feed available at the moment',
-      position: 'bottom',
+      position: 'top',
       visibilityTime: 2000,
     });
   }}

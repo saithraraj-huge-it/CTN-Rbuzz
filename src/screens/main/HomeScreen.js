@@ -12,6 +12,7 @@ import {useTheme} from '../../contexts/ThemeContext';
 import Icon from '../../theme/IconsProvider';
 import Skeleton from '../../components/ui/Skeleton';
 import {useAuth} from '../../contexts/AuthContext';
+import { useData } from '../../contexts/DataProvider'
 
 const services = [
   {key: 'PrepaidMobile', label: 'Prepaid Mobile ', icon: 'PrepaidIcon'},
@@ -19,7 +20,6 @@ const services = [
   {key: 'DTHRecharge', label: 'DTH', icon: 'DthIcon'},
   {key: 'ElectricityScreen', label: 'Electricity', icon: 'ElectricityIcon'},
   {key: 'TrafficChallan', label: 'Traffic Challan', icon: 'TrafficIcon'},
-  // {key: 'WalletPurchase', label: 'E-Wallet Purchase', icon: 'ewalletIcon'},
   {key: 'ChannelScreen', label: 'Channels', icon: 'channelIcon'},
   {key: 'CableTvScreen', label: 'Cable TV', icon: 'televisionIcon'},
   {key: 'AddOnService', label: 'Other Add-On Services', icon: 'ServiceIcon'},
@@ -30,7 +30,7 @@ const HomeScreen = ({navigation}) => {
   const {theme} = useTheme();
   const [loading, setLoading] = useState(true);
   const {user} = useAuth();
-  console.log(user);
+  const { getAccountInfo } = useData()
 
   const screenWidth = Dimensions.get('window').width;
   const padding = 16;
@@ -53,6 +53,26 @@ const HomeScreen = ({navigation}) => {
     }
     return rows;
   };
+
+  const [accountBalance, setAccountBalance] = useState(0)
+
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const list = await getAccountInfo()
+          if (Array.isArray(list) && list.length > 0) {
+            const { OBA, SAL, ABA, EAR, PUR } = list[0]
+            setAccountBalance(Number(ABA).toFixed(2))
+          }
+        } catch (error) {
+          console.error('Error fetching account info:', error)
+        } finally {
+          setLoading(false)
+        }
+      }
+  
+      fetchData()
+    }, [])
 
   return (
     <ScrollView
@@ -170,7 +190,7 @@ const HomeScreen = ({navigation}) => {
                     fontFamily: theme.typography.fontFamily.medium,
                     fontSize: theme.typography.fontSize.m,
                   }}>
-                  {user?.accountBalance}
+                  {accountBalance}
                 </Text>
               </Text>
             </View>

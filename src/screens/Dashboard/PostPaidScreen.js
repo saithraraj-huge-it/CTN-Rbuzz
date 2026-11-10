@@ -22,13 +22,14 @@ import {useData} from '../../contexts/DataProvider';
 import {Easing} from 'react-native';
 import NotificationEvents from '../../utils/NotificationEvents';
 import Toast from 'react-native-toast-message';
-import { validateAmount, validateMobile } from '../../utils/validation';
+import {validateAmount, validateMobile} from '../../utils/validation';
 
 const {height: screenHeight} = Dimensions.get('window');
 
 function PostPaidScreen({navigation}) {
   const {theme} = useTheme();
-  const {getPendingRecharge, getMasterOptions, createRecharge, loading} = useData();
+  const {getPendingRecharge, getMasterOptions, createRecharge, loading} =
+    useData();
   const [mobile, setMobile] = useState('');
   const [rechargeAmt, setRechargeAmt] = useState('');
   const [selectedOperator, setSelectedOperator] = useState(null);
@@ -49,22 +50,21 @@ function PostPaidScreen({navigation}) {
   const mobileInputRef = useRef(null);
   const amountInputRef = useRef(null);
 
-
   useEffect(() => {
     fetchPendingRecharges();
   }, []);
 
   useEffect(() => {
-  const handleNotification = () => {
-    fetchPendingRecharges(true);
-  };
+    const handleNotification = () => {
+      fetchPendingRecharges(true);
+    };
 
-  NotificationEvents.on('getPendingRecharge', handleNotification);
+    NotificationEvents.on('getPendingRecharge', handleNotification);
 
-  return () => {
-    NotificationEvents.off('getPendingRecharge', handleNotification);
-  };
-}, []);
+    return () => {
+      NotificationEvents.off('getPendingRecharge', handleNotification);
+    };
+  }, []);
 
   useEffect(() => {
     if (!topLoading) {
@@ -87,7 +87,6 @@ function PostPaidScreen({navigation}) {
 
   useEffect(() => {
     const refreshFromNotification = () => {
-      console.log('[Notification] Recalling getPendingRecharge');
       fetchPendingRecharges(2);
     };
 
@@ -116,19 +115,16 @@ function PostPaidScreen({navigation}) {
 
   const validate = () => {
     const newErrors = {};
-   
 
     if (!validateMobile(mobile)) {
       newErrors.mobile = 'Please enter a valid 10-digit mobile number';
     }
-    
-    
-    if (!selectedOperator) newErrors.operator = 'Operator is required';
-    
 
-      if (!validateAmount(rechargeAmt, 10)) {
-          newErrors.rechargeAmt = 'Please enter a valid amount';
-        }
+    if (!selectedOperator) newErrors.operator = 'Operator is required';
+
+    if (!validateAmount(rechargeAmt, 10)) {
+      newErrors.rechargeAmt = 'Please enter a valid amount';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -156,12 +152,12 @@ function PostPaidScreen({navigation}) {
 
     try {
       const response = await createRecharge(payload);
-      if (response?.data?.result) {
+      if (response?.result) {
         setShowPinModal(false);
         Toast.show({
           type: 'success',
           text1: response.Message,
-          position: 'bottom',
+          position: 'top',
         });
         setMobile('');
         setRechargeAmt('');
@@ -169,32 +165,31 @@ function PostPaidScreen({navigation}) {
         setErrors({});
         fetchPendingRecharges();
 
-         Keyboard.dismiss();
+        Keyboard.dismiss();
 
-  setTimeout(() => {
-    mobileInputRef.current?.focus();
-  }, 400);
-
+        setTimeout(() => {
+          mobileInputRef.current?.focus();
+        }, 400);
       } else {
-      const message = response?.Message || 'Transaction failed';
+        const message = response?.Message || 'Transaction failed';
+        setPinError(message);
+
+        Toast.show({
+          type: 'error',
+          text1: message,
+          position: 'top',
+        });
+      }
+    } catch (error) {
+      const message = error?.Message || 'Something went wrong';
       setPinError(message);
 
       Toast.show({
         type: 'error',
         text1: message,
-        position: 'bottom',
+        position: 'top',
       });
-    }
-  } catch (error) {
-    const message = error?.Message || 'Something went wrong';
-    setPinError(message);
-
-    Toast.show({
-      type: 'error',
-      text1: message,
-      position: 'bottom',
-    });
-  } finally {
+    } finally {
       setIsProcessing(false);
     }
   };
@@ -214,11 +209,11 @@ function PostPaidScreen({navigation}) {
       <Text
         style={{
           color: theme.colors.textSecondary,
-           fontFamily: theme.typography.fontFamily.regular,
-                   fontSize:theme.typography.fontSize.m,
+          fontFamily: theme.typography.fontFamily.regular,
+          fontSize: theme.typography.fontSize.m,
           textAlign: 'center',
         }}>
-      No records found
+        No records found
       </Text>
     </View>
   );
@@ -252,8 +247,8 @@ function PostPaidScreen({navigation}) {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={async () => {
-      await fetchPendingRecharges(true); 
-    }}
+                await fetchPendingRecharges(true);
+              }}
               colors={[theme.colors.primary]}
               tintColor={theme.colors.primary}
             />
@@ -314,7 +309,7 @@ function PostPaidScreen({navigation}) {
             <Animated.View
               style={{opacity: fadeAnim, transform: [{translateY: slideAnim}]}}>
               <Input
-              ref={mobileInputRef}
+                ref={mobileInputRef}
                 value={mobile}
                 onChangeText={text => {
                   setMobile(text);
@@ -340,13 +335,13 @@ function PostPaidScreen({navigation}) {
                 onSelect={item => {
                   setErrors(prev => ({...prev, operator: undefined}));
                 }}
-                nextInputRef={amountInputRef} 
+                nextInputRef={amountInputRef}
                 error={errors.operator}
                 theme={theme}
               />
 
               <Input
-              ref={amountInputRef} 
+                ref={amountInputRef}
                 value={rechargeAmt}
                 onChangeText={text => {
                   setRechargeAmt(text);

@@ -13,8 +13,6 @@ const SettingsScreen = () => {
   const navigation = useNavigation();
   const {theme} = useTheme();
   const {logout, user} = useAuth();
-  console.log(user,"uer");
-  
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -33,10 +31,11 @@ const SettingsScreen = () => {
       <Icon name={iconName} size={18} color={theme.colors.primary} />
       <Text
         className="ml-2"
-        style={{color: theme.colors.text, 
-          fontSize:theme.typography.fontSize.l,
+        style={{
+          color: theme.colors.text,
+          fontSize: theme.typography.fontSize.l,
           fontFamily: theme.typography.fontFamily.regular,
-          }}
+        }}
         allowFontScaling={false}>
         {title}
       </Text>
@@ -47,20 +46,20 @@ const SettingsScreen = () => {
     <TouchableOpacity
       key={title}
       className="flex-row items-center justify-between py-4 "
-      style={{borderBottomWidth:1,borderBottomColor:theme.colors.border}}
+      style={{borderBottomWidth: 1, borderBottomColor: theme.colors.border}}
       onPress={() => handleNavigate(screen)}>
       <View className="flex-row items-center">
         <View
           className="w-9 h-9 justify-center items-center rounded-full"
-            style={{ backgroundColor: `${theme.colors.primary}20` }}
-          >
+          style={{backgroundColor: `${theme.colors.primary}20`}}>
           <Icon icon={iconName} size={28} />
         </View>
         <Text
           className="ml-2"
-          style={{color: theme.colors.text, 
-             fontSize:theme.typography.fontSize.m,
-          fontFamily: theme.typography.fontFamily.regular,
+          style={{
+            color: theme.colors.text,
+            fontSize: theme.typography.fontSize.m,
+            fontFamily: theme.typography.fontFamily.regular,
           }}
           allowFontScaling={false}>
           {title}
@@ -93,16 +92,8 @@ const SettingsScreen = () => {
               'Helpline Services',
               'HelplineScreen',
             )}
-            {renderMenuItem(
-              'passwordIcon',
-              'Change PIN',
-              'ChangePinScreen',
-            )}
-            {renderMenuItem(
-              'SettingsIcon',
-              'Settings',
-              'AccSettingsScreen',
-            )}
+            {renderMenuItem('passwordIcon', 'Change PIN', 'ChangePinScreen')}
+            {renderMenuItem('SettingsIcon', 'Settings', 'AccSettingsScreen')}
           </View>
         </ScrollView>
 
@@ -117,8 +108,8 @@ const SettingsScreen = () => {
             <Text
               style={{
                 color: theme.colors.text,
-                fontSize:theme.typography.fontSize.m,
-          fontFamily: theme.typography.fontFamily.regular,
+                fontSize: theme.typography.fontSize.m,
+                fontFamily: theme.typography.fontFamily.regular,
               }}
               allowFontScaling={false}>
               LOG OUT
@@ -131,7 +122,7 @@ const SettingsScreen = () => {
         onCancel={() => setIsModalVisible(false)}
         onConfirm={handleLogout}
         message="Are you sure you want to logout?"
-       userName={`👋 Hi ${user?.accountName}`}
+        userName={`👋 Hi ${user?.accountName}`}
         theme={theme}
       />
     </View>

@@ -34,10 +34,6 @@ const WalletPurchaseTab = ({navigation}) => {
     if (!remark) newErrors.remark = 'Remark is required';
 
     setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      console.log('Submit wallet purchase');
-    }
   };
 
   return (
@@ -61,7 +57,7 @@ const WalletPurchaseTab = ({navigation}) => {
               {label: 'DTH', value: 'dth'},
             ]}
             onSelect={item => console.log('Selected category:', item)}
-              error={errors.operator}
+            error={errors.operator}
             theme={theme}
           />
 
@@ -75,7 +71,7 @@ const WalletPurchaseTab = ({navigation}) => {
               {label: 'Retailer B', value: 'b'},
             ]}
             onSelect={item => console.log('Selected retailer:', item)}
-              error={errors.operator}
+            error={errors.operator}
             theme={theme}
           />
 
@@ -89,7 +85,7 @@ const WalletPurchaseTab = ({navigation}) => {
               {label: 'Bank B', value: 'b'},
             ]}
             onSelect={item => console.log('Selected bank:', item)}
-              error={errors.operator}
+            error={errors.operator}
             theme={theme}
           />
 

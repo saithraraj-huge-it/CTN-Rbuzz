@@ -1,11 +1,11 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, {createContext, useContext, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { axiosGet, axiosPost } from '../utils/api';
+import {axiosGet, axiosPost} from '../utils/api';
 import dayjs from 'dayjs';
 
 const DataContext = createContext();
 
-export const DataProvider = ({ children }) => {
+export const DataProvider = ({children}) => {
   const [loadingMaster, setLoadingMaster] = useState({});
   const [masterData, setMasterData] = useState({});
   const [loadingRecharge, setLoadingRecharge] = useState(false);
@@ -14,18 +14,14 @@ export const DataProvider = ({ children }) => {
 
   const getPendingRecharge = async (itemId = 1) => {
     const sessionCookie = await AsyncStorage.getItem('auth_cookie');
-    console.log(sessionCookie,"sessionCookie");
-    
     try {
-      const get =  `api/atomService/secure/getPendingRecharge?itemTypeId=${itemId}`
-      console.log(get,"get");
-      
-      const response = await axiosGet.get(get,
+      const get = `api/atomService/secure/getPendingRecharge?itemTypeId=${itemId}`;
+      const response = await axiosGet.get(
+        get,
         // `api/atomService/secure/getPendingRecharge?itemId=${itemId}`,
-        { headers: { Cookie: sessionCookie } }
+        {headers: {Cookie: sessionCookie}},
       );
-      console.log(response,"responsegetpre");
-      
+
       return response?.data?.LST || [];
     } catch (error) {
       console.error('Error fetching pending recharges:', error);
@@ -39,7 +35,7 @@ export const DataProvider = ({ children }) => {
     try {
       const response = await axiosGet.get(
         `api/atomService/secure/getPendingService?itemTypeId=${itemId}`,
-        { headers: { Cookie: sessionCookie } }
+        {headers: {Cookie: sessionCookie}},
       );
       return response?.data?.LST || [];
     } catch (error) {
@@ -48,42 +44,36 @@ export const DataProvider = ({ children }) => {
     }
   };
 
-  const fetchMaster = async (typeId) => {
+  const fetchMaster = async typeId => {
     if (loadingMaster[typeId] || masterData[typeId]) return;
 
-    setLoadingMaster((prev) => ({ ...prev, [typeId]: true }));
+    setLoadingMaster(prev => ({...prev, [typeId]: true}));
     try {
       const sessionCookie = await AsyncStorage.getItem('auth_cookie');
 
-        
-      const get = `api/atomService/secure/getMasters?itemTypeId=${typeId}`
-      console.log(get,'master');
-      
+      const get = `api/atomService/secure/getMasters?itemTypeId=${typeId}`;
+      const response = await axiosGet.get(get, {
+        headers: {Cookie: sessionCookie},
+      });
 
-      const response = await axiosGet.get(
-        // `/api/atomService/secure/getServiceProvider?itemTypeId=${typeId}`,
-      get,  { headers: { Cookie: sessionCookie } }
-      );
+      const options =
+        response?.data?.LST?.map(item => ({
+          label: item.INM,
+          value: item.IID,
+        })) || [];
 
-      console.log(response,"master");
-      
-      const options = response?.data?.LST?.map((item) => ({
-        label: item.INM,
-        value: item.IID,
-      })) || [];
-
-      setMasterData((prev) => ({
+      setMasterData(prev => ({
         ...prev,
         [typeId]: options,
       }));
     } catch (err) {
       console.error(`Error fetching master for typeId ${typeId}:`, err.message);
     } finally {
-      setLoadingMaster((prev) => ({ ...prev, [typeId]: false }));
+      setLoadingMaster(prev => ({...prev, [typeId]: false}));
     }
   };
 
-  const getMasterOptions = (typeId) => {
+  const getMasterOptions = typeId => {
     if (!masterData[typeId]) {
       fetchMaster(typeId);
       return [];
@@ -91,7 +81,7 @@ export const DataProvider = ({ children }) => {
     return masterData[typeId];
   };
 
-  const createRecharge = async ({ itemId, mobileNo, amount, pin }) => {
+  const createRecharge = async ({itemId, mobileNo, amount, pin}) => {
     setLoadingRecharge(true);
     setRechargeError(null);
     setRechargeResult(null);
@@ -104,26 +94,21 @@ export const DataProvider = ({ children }) => {
       pinNo: pin,
     };
 
-    console.log(payload,"payload Recharge");
-
     try {
-      const response = await axiosPost.post('/api/atomService/secure/addRecharge', payload);
-      if (response.data?.result) {
+      const response = await axiosPost.post(
+        '/api/atomService/secure/addRecharge',
+        payload,
+      );
+      if (response.data?.result === true) {
         setRechargeResult(response.data);
-        console.log(response.data?.Message,"message");
-
-        console.log(response,"respnse");
-        
-
         return response.data;
       } else {
         setRechargeError(response.data?.Message);
-        
-        return null;
+        return response.data;
       }
     } catch (err) {
       setRechargeError(err?.response?.data?.Message || 'Something went wrong');
-      return null;
+      return err?.response?.data;
     } finally {
       setLoadingRecharge(false);
     }
@@ -153,51 +138,28 @@ export const DataProvider = ({ children }) => {
       emailId: email,
     };
 
-
-    console.log(payload,"payloadele");
-    
-
     try {
-      const response = await axiosPost.post('/api/atomService/secure/addService', payload);
-
-      console.log(response,'resEle');
-      
-      if (response.data?.result) {
+      const response = await axiosPost.post(
+        '/api/atomService/secure/addService',
+        payload,
+      );
+      if (response.data?.result === true) {
         setRechargeResult(response.data);
-        console.log(response,"reselec");
-        
         return response.data;
       } else {
         setRechargeError(response.data?.Message);
-        return null;
+        return response.data;
       }
     } catch (err) {
       setRechargeError(err?.response?.data?.Message || 'Something went wrong');
-      return null;
+      return err?.response?.data;
     } finally {
       setLoadingRecharge(false);
     }
   };
 
-
   const createTrafficChallan = async ({
-  trafficChallanTypeId,
-  mobileNumber,
-  challanNumber,
-  vehicleNumber,
-  engineNumber,
-  chassisNumber,
-  DLNumber,
-  amount,
-  pinNo,
-}) => {
-  setLoadingRecharge(true);
-  setRechargeError(null);
-  setRechargeResult(null);
-
-  const payload = {
     trafficChallanTypeId,
-    entryDate: dayjs().format('YYYY/MM/DD'),
     mobileNumber,
     challanNumber,
     vehicleNumber,
@@ -206,37 +168,48 @@ export const DataProvider = ({ children }) => {
     DLNumber,
     amount,
     pinNo,
-  };
-  console.log(payload,"payload");
-  
+  }) => {
+    setLoadingRecharge(true);
+    setRechargeError(null);
+    setRechargeResult(null);
 
-  try {
-    const sessionCookie = await AsyncStorage.getItem('auth_cookie');
-    const response = await axiosPost.post(
-      '/api/atomService/secure/addTrafficChallan',
-      payload,
-      { headers: { Cookie: sessionCookie } }
-    );
+    const payload = {
+      trafficChallanTypeId,
+      entryDate: dayjs().format('YYYY/MM/DD'),
+      mobileNumber,
+      challanNumber,
+      vehicleNumber,
+      engineNumber,
+      chassisNumber,
+      DLNumber,
+      amount,
+      pinNo,
+    };
 
-    if (response.data?.result) {
-      setRechargeResult(response.data);
-      console.log(response.data,"response");
-      
-      return response.data;
-    } else {
-      setRechargeError(response.data?.Message);
-      return null;
+    try {
+      const sessionCookie = await AsyncStorage.getItem('auth_cookie');
+      const response = await axiosPost.post(
+        '/api/atomService/secure/addTrafficChallan',
+        payload,
+        {headers: {Cookie: sessionCookie}},
+      );
+
+      if (response.data?.result === true) {
+        setRechargeResult(response.data);
+        return response.data;
+      } else {
+        setRechargeError(response.data?.Message);
+        return response.data;
+      }
+    } catch (err) {
+      setRechargeError(err?.response?.data?.Message || 'Something went wrong');
+      return err?.response?.data;
+    } finally {
+      setLoadingRecharge(false);
     }
-  } catch (err) {
-    setRechargeError(err?.response?.data?.Message || 'Something went wrong');
-    return null;
-  } finally {
-    setLoadingRecharge(false);
-  }
-};
+  };
 
-
-const createComplaint = async ({complaintDetails , pin ,complaintTypeId}) => {
+  const createComplaint = async ({complaintDetails, pin, complaintTypeId}) => {
     setLoadingRecharge(true);
     setRechargeError(null);
     setRechargeResult(null);
@@ -245,237 +218,207 @@ const createComplaint = async ({complaintDetails , pin ,complaintTypeId}) => {
       entryDate: dayjs().format('YYYY/MM/DD'),
       complaintDetails,
       pinNo: pin,
-      complaintTypeId:complaintTypeId
+      complaintTypeId: complaintTypeId,
     };
-      console.log(payload,"payload");
-      
+
     try {
-      const response = await axiosPost.post('/api/atomService/secure/addComplaint', payload);
-      console.log(response,"resC");
-      
-      if (response.data?.result) {
+      const response = await axiosPost.post(
+        '/api/atomService/secure/addComplaint',
+        payload,
+      );
+
+      if (response.data?.result === true) {
         setRechargeResult(response.data);
-        console.log(response.data,"v");
-        
+
         return response.data;
       } else {
         setRechargeError(response.data?.Message);
-        return null;
+        return response.data;
       }
     } catch (err) {
       setRechargeError(err?.response?.data?.Message || 'Something went wrong');
-      return null;
+      return err?.response?.data;
     } finally {
       setLoadingRecharge(false);
     }
   };
 
   const getPendingComplaint = async () => {
-  const sessionCookie = await AsyncStorage.getItem('auth_cookie');
-  try {
-    const response = await axiosGet.get(
-      'api/atomService/secure/getPendingComplaint',
-      { headers: { Cookie: sessionCookie } }
-    );
-    console.log(response?.data?.LST,"response?.data?.LST");
-    
-    return response?.data?.LST || [];
-  } catch (error) {
-    console.error('Error fetching pending Compliant:', error);
-    return [];
-  }
-};
+    const sessionCookie = await AsyncStorage.getItem('auth_cookie');
+    try {
+      const response = await axiosGet.get(
+        'api/atomService/secure/getPendingComplaint',
+        {headers: {Cookie: sessionCookie}},
+      );
 
-const getPendingTrafficChallan = async () => {
-  const sessionCookie = await AsyncStorage.getItem('auth_cookie');
-  try {
-    const response = await axiosGet.get(
-      'api/atomService/secure/getPendingTrafficChallan',
-      { headers: { Cookie: sessionCookie } }
-    );
-    console.log(response,"challan");
-    
-    return response?.data?.LST || [];
-  } catch (error) {
-    console.error('Error fetching pending traffic challans:', error);
-    return [];
-  }
-};
+      return response?.data?.LST || [];
+    } catch (error) {
+      console.error('Error fetching pending Compliant:', error);
+      return [];
+    }
+  };
 
-const getRechargeReport = async (fromDate, toDate) => {
-  const sessionCookie = await AsyncStorage.getItem('auth_cookie');
+  const getPendingTrafficChallan = async () => {
+    const sessionCookie = await AsyncStorage.getItem('auth_cookie');
+    try {
+      const response = await axiosGet.get(
+        'api/atomService/secure/getPendingTrafficChallan',
+        {headers: {Cookie: sessionCookie}},
+      );
 
-   const formattedFrom = dayjs(fromDate).format('YYYY/MM/DD');
-  const formattedTo = dayjs(toDate).format('YYYY/MM/DD');
+      return response?.data?.LST || [];
+    } catch (error) {
+      console.error('Error fetching pending traffic challans:', error);
+      return [];
+    }
+  };
 
-  try {
-    const response = await axiosGet.get(
-      `api/atomService/secure/listRecharge?fromDate=${formattedFrom}&toDate=${formattedTo}`,
-      { headers: { Cookie: sessionCookie } }
-    );
-    console.log(response.data,"response");
-
-    return response?.data?.LST || [];
-    
-  } catch (error) {
-    console.error('Error fetching Recharge Report:', error);
-    return [];
-  }
-};
-
-const getSalesReport = async (fromDate, toDate) => {
-  const sessionCookie = await AsyncStorage.getItem('auth_cookie');
-
-   const formattedFrom = dayjs(fromDate).format('YYYY/MM/DD');
-  const formattedTo = dayjs(toDate).format('YYYY/MM/DD');
-
-  try {
-    const response = await axiosGet.get(
-      `api/atomService/secure/getSales?fromDate=${formattedFrom}&toDate=${formattedTo}`,
-      { headers: { Cookie: sessionCookie } }
-    );
-    console.log(response.data,"response");
-
-    return response?.data?.LST || [];
-    
-  } catch (error) {
-    console.error('Error fetching Sales Report:', error);
-    return [];
-  }
-};
-
-const getPurchaseReport = async (fromDate, toDate) => {
-  const sessionCookie = await AsyncStorage.getItem('auth_cookie');
-
-   const formattedFrom = dayjs(fromDate).format('YYYY/MM/DD');
-  const formattedTo = dayjs(toDate).format('YYYY/MM/DD');
-
-  console.log(formattedFrom,"formattedFrom");
-  
-
-  try {
-    const response = await axiosGet.get(
-      `api/atomService/secure/getPurchase?fromDate=${formattedFrom}&toDate=${formattedTo}`,
-      { headers: { Cookie: sessionCookie } }
-    );
-    console.log(response.data,"response");
-
-    return response?.data?.LST || [];
-    
-  } catch (error) {
-    console.error('Error fetching Purchase Report:', error);
-    return [];
-  }
-};
-
-const getComplaintReport = async (fromDate, toDate) => {
-  const sessionCookie = await AsyncStorage.getItem('auth_cookie');
-
-   const formattedFrom = dayjs(fromDate).format('YYYY/MM/DD');
-  const formattedTo = dayjs(toDate).format('YYYY/MM/DD');
-
-  try {
-    const response = await axiosGet.get(
-      `api/atomService/secure/listComplaint?fromDate=${formattedFrom}&toDate=${formattedTo}`,
-      { headers: { Cookie: sessionCookie } }
-    );
-    console.log(response.data,"response");
-
-    return response?.data?.LST || [];
-    
-  } catch (error) {
-    console.error('Error fetching Complaint Report:', error);
-    return [];
-  }
-};
-
-const getAccountInfo = async () => {
-  const sessionCookie = await AsyncStorage.getItem('auth_cookie');
-
-  try {
-    const response = await axiosGet.get(
-      `api/atomService/secure/getAccountInfo`,
-      { headers: { Cookie: sessionCookie } }
-    );
-    console.log(response.data,"response");
-
-    return response?.data?.LST || [];
-    
-  } catch (error) {
-    console.error('Error fetching Account INFO Report:', error);
-    return [];
-  }
-};
-
-const getNotification = async () => {
-  const sessionCookie = await AsyncStorage.getItem('auth_cookie');
-
-  console.log(sessionCookie,"sessionCookie");
-  
-
-  try {
-    const response = await axiosGet.get(
-      `api/atomService/secure/getNotification`,
-      { headers: { Cookie: sessionCookie } }
-    );
-    console.log(response,"responseNot");
-
-    return response?.data?.LST || [];
-    
-  } catch (error) {
-    console.error('Error fetching Norification:', error);
-    return [];
-  }
-};
-
-
-const clearNotification = async () => {
-  const sessionCookie = await AsyncStorage.getItem('auth_cookie');
-
-  try {
-    const response = await axiosPost.post(
-      'api/atomService/secure/clearNotification',
-      {}, 
-      { headers: { Cookie: sessionCookie } }
-    );
-
-    console.log(response, "clearNotification response");
-
-    return response?.data;
-  } catch (error) {
-    console.error('Error clearing notifications:', error);
-    return null;
-  }
-};
-
-const getComplaintTypes = async () => {
-  try {
+  const getRechargeReport = async (fromDate, toDate) => {
     const sessionCookie = await AsyncStorage.getItem('auth_cookie');
 
-    const get = `api/atomService/secure/getMasters?itemTypeId=0`
-    console.log(get,"mastercompleint");
-    
+    const formattedFrom = dayjs(fromDate).format('YYYY/MM/DD');
+    const formattedTo = dayjs(toDate).format('YYYY/MM/DD');
 
-    const response = await axiosGet.get(
-      get,
-      { headers: { Cookie: sessionCookie } }
-    );
+    try {
+      const response = await axiosGet.get(
+        `api/atomService/secure/listRecharge?fromDate=${formattedFrom}&toDate=${formattedTo}`,
+        {headers: {Cookie: sessionCookie}},
+      );
 
-    console.log("Raw complaint types response:", response?.data);
+      return response?.data?.LST || [];
+    } catch (error) {
+      console.error('Error fetching Recharge Report:', error);
+      return [];
+    }
+  };
 
-    const complaintTypes = response?.data?.LST1?.map(item => ({
-      label: item.CTN,
-      value: item.CTI,
-    })) || [];
+  const getSalesReport = async (fromDate, toDate) => {
+    const sessionCookie = await AsyncStorage.getItem('auth_cookie');
 
-    console.log("Mapped complaint types:", complaintTypes);
+    const formattedFrom = dayjs(fromDate).format('YYYY/MM/DD');
+    const formattedTo = dayjs(toDate).format('YYYY/MM/DD');
 
-    return complaintTypes;
-  } catch (error) {
-    console.error('Error fetching complaint types:', error);
-    return [];
-  }
-};
+    try {
+      const response = await axiosGet.get(
+        `api/atomService/secure/getSales?fromDate=${formattedFrom}&toDate=${formattedTo}`,
+        {headers: {Cookie: sessionCookie}},
+      );
+
+      return response?.data?.LST || [];
+    } catch (error) {
+      console.error('Error fetching Sales Report:', error);
+      return [];
+    }
+  };
+
+  const getPurchaseReport = async (fromDate, toDate) => {
+    const sessionCookie = await AsyncStorage.getItem('auth_cookie');
+
+    const formattedFrom = dayjs(fromDate).format('YYYY/MM/DD');
+    const formattedTo = dayjs(toDate).format('YYYY/MM/DD');
+
+    try {
+      const response = await axiosGet.get(
+        `api/atomService/secure/getPurchase?fromDate=${formattedFrom}&toDate=${formattedTo}`,
+        {headers: {Cookie: sessionCookie}},
+      );
+      return response?.data?.LST || [];
+    } catch (error) {
+      console.error('Error fetching Purchase Report:', error);
+      return [];
+    }
+  };
+
+  const getComplaintReport = async (fromDate, toDate) => {
+    const sessionCookie = await AsyncStorage.getItem('auth_cookie');
+
+    const formattedFrom = dayjs(fromDate).format('YYYY/MM/DD');
+    const formattedTo = dayjs(toDate).format('YYYY/MM/DD');
+
+    try {
+      const response = await axiosGet.get(
+        `api/atomService/secure/listComplaint?fromDate=${formattedFrom}&toDate=${formattedTo}`,
+        {headers: {Cookie: sessionCookie}},
+      );
+
+      return response?.data?.LST || [];
+    } catch (error) {
+      console.error('Error fetching Complaint Report:', error);
+      return [];
+    }
+  };
+
+  const getAccountInfo = async () => {
+    const sessionCookie = await AsyncStorage.getItem('auth_cookie');
+
+    try {
+      const response = await axiosGet.get(
+        `api/atomService/secure/getAccountInfo`,
+        {headers: {Cookie: sessionCookie}},
+      );
+
+      return response?.data?.LST || [];
+    } catch (error) {
+      console.error('Error fetching Account INFO Report:', error);
+      return [];
+    }
+  };
+
+  const getNotification = async () => {
+    const sessionCookie = await AsyncStorage.getItem('auth_cookie');
+
+    try {
+      const response = await axiosGet.get(
+        `api/atomService/secure/getNotification`,
+        {headers: {Cookie: sessionCookie}},
+      );
+
+      return response?.data?.LST || [];
+    } catch (error) {
+      console.error('Error fetching Norification:', error);
+      return [];
+    }
+  };
+
+  const clearNotification = async () => {
+    const sessionCookie = await AsyncStorage.getItem('auth_cookie');
+
+    try {
+      const response = await axiosPost.post(
+        'api/atomService/secure/clearNotification',
+        {},
+        {headers: {Cookie: sessionCookie}},
+      );
+
+      return response?.data;
+    } catch (error) {
+      console.error('Error clearing notifications:', error);
+      return null;
+    }
+  };
+
+  const getComplaintTypes = async () => {
+    try {
+      const sessionCookie = await AsyncStorage.getItem('auth_cookie');
+
+      const get = `api/atomService/secure/getMasters?itemTypeId=0`;
+
+      const response = await axiosGet.get(get, {
+        headers: {Cookie: sessionCookie},
+      });
+
+      const complaintTypes =
+        response?.data?.LST1?.map(item => ({
+          label: item.CTN,
+          value: item.CTI,
+        })) || [];
+
+      return complaintTypes;
+    } catch (error) {
+      console.error('Error fetching complaint types:', error);
+      return [];
+    }
+  };
 
   return (
     <DataContext.Provider
@@ -500,9 +443,8 @@ const getComplaintTypes = async () => {
         getPurchaseReport,
         getNotification,
         clearNotification,
-        getComplaintTypes
-      }}
-    >
+        getComplaintTypes,
+      }}>
       {children}
     </DataContext.Provider>
   );

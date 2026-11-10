@@ -18,10 +18,9 @@ import {useTheme} from '../../contexts/ThemeContext';
 import {Input} from '../../components/ui/Input';
 import {Button} from '../../components/ui/Button';
 import Icon from '../../theme/IconsProvider';
-import CheckBox from '@react-native-community/checkbox';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import messaging from '@react-native-firebase/messaging';
-
 
 const {height: screenHeight} = Dimensions.get('window');
 
@@ -39,36 +38,31 @@ const LoginScreen = ({navigation}) => {
   const {theme} = useTheme();
   const [fcmToken, setFcmToken] = useState('');
 
-
   useEffect(() => {
-  const requestPermissionAndGetToken = async () => {
-    try {
-      if (Platform.OS === 'android') {
-        await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        );
+    const requestPermissionAndGetToken = async () => {
+      try {
+        if (Platform.OS === 'android') {
+          await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+          );
+        }
+
+        const authStatus = await messaging().requestPermission();
+        const enabled =
+          authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+          authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+        if (enabled) {
+          const token = await messaging().getToken();
+          setFcmToken(token);
+        }
+      } catch (error) {
+        console.warn('FCM Permission Error:', error);
       }
+    };
 
-      const authStatus = await messaging().requestPermission();
-      const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-      if (enabled) {
-        const token = await messaging().getToken();
-        console.log('FCM Token:', token);
-        setFcmToken(token);
-      } else {
-        console.log('Permission not granted for notifications');
-      }
-    } catch (error) {
-      console.log('FCM Permission Error:', error);
-    }
-  };
-
-  requestPermissionAndGetToken();
-}, []);
-
+    requestPermissionAndGetToken();
+  }, []);
 
   useEffect(() => {
     const generateCaptcha = () => {
@@ -88,7 +82,7 @@ const LoginScreen = ({navigation}) => {
           setPassword(savedPassword);
         }
       } catch (error) {
-        console.log('Error loading stored credentials', error);
+        console.warn('Error loading stored credentials', error);
       }
     };
 
@@ -172,48 +166,81 @@ const LoginScreen = ({navigation}) => {
     }
   };
 
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showEvent =
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+
+    const hideEvent =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSubscription = Keyboard.addListener(showEvent, () => {
+      setKeyboardVisible(true);
+    });
+
+    const hideSubscription = Keyboard.addListener(hideEvent, () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{flex: 1}}>
             <ScrollView
+              style={{flex: 1}}
               contentContainerStyle={{
                 flexGrow: 1,
-                justifyContent: 'center',
                 paddingHorizontal: 20,
-                paddingVertical: 20,
+                paddingTop: 0,
+                paddingBottom: 40,
               }}
               keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag"
               showsVerticalScrollIndicator={false}>
-              <View style={{flex: 1, alignItems: 'center', }}>
+              <View style={{flex: 1, alignItems: 'center'}}>
                 <View style={{width: '100%', maxWidth: 400}}>
-                  <View style={{alignItems: 'center', marginBottom: 28}}>
-                    <Icon icon="LoginLogo" size={150} />
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      marginBottom: keyboardVisible ? 12 : 28,
+                    }}>
+                    <Icon icon="LoginLogo" size={140} />
+
                     <Text
                       style={{
                         color: theme.colors.primary,
                         fontFamily: theme.typography.fontFamily.bold,
-                        fontSize:theme.typography.fontSize.m,
-                        marginTop:-12,
+                        fontSize: theme.typography.fontSize.m,
+                        marginTop: keyboardVisible ? -5 : -12,
                       }}
                       allowFontScaling={false}>
                       Welcome!
                     </Text>
-                    <Text
-                      style={{
-                        color: theme.colors.text,
-                        fontFamily: theme.typography.fontFamily.regular,
-                        fontSize:theme.typography.fontSize.m,
-                        marginTop: 8,
-                        textAlign: 'center',
-                      }}
-                      allowFontScaling={false}>
-                      Hey! Sign in to enjoy the service
-                    </Text>
+
+                    {!keyboardVisible && (
+                      <Text
+                        style={{
+                          color: theme.colors.text,
+                          fontFamily: theme.typography.fontFamily.regular,
+                          fontSize: theme.typography.fontSize.m,
+                          marginTop: 8,
+                          textAlign: 'center',
+                        }}
+                        allowFontScaling={false}>
+                        Hey! Sign in to enjoy the service
+                      </Text>
+                    )}
                   </View>
 
                   <Input
@@ -308,10 +335,27 @@ const LoginScreen = ({navigation}) => {
                       allowFontScaling={false}>
                       Remember Me
                     </Text>
-                    <CheckBox
-                      value={rememberMe}
-                      onValueChange={handleRememberMeToggle}
-                      tintColors={{true: theme.colors.primary}}
+
+                    <BouncyCheckbox
+                      isChecked={rememberMe}
+                      onPress={handleRememberMeToggle}
+                      text=""
+                      disableText
+                      size={20}
+                      fillColor="#219653"
+                      unFillColor="#FFFFFF"
+                      iconStyle={{
+                        borderRadius: 4,
+                        borderColor: '#219653',
+                      }}
+                      innerIconStyle={{
+                        borderRadius: 4,
+                      }}
+                      style={{
+                        width: 20,
+                        margin: 0,
+                        padding: 0,
+                      }}
                     />
                   </View>
 

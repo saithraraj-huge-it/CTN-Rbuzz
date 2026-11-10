@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./App.{js,jsx,ts,tsx}", 
+    "./App.{js,jsx,ts,tsx}",
     "./src/**/*.{js,jsx,ts,tsx}",
     "./screens/**/*.{js,jsx,ts,tsx}",
   ],
@@ -10,12 +10,11 @@ module.exports = {
       fontFamily: {
         montserrat: ['Montserrat-Regular'],
       },
-       maxHeight: {
-        '50': '100px',   
-        '75': '200px',   
+      maxHeight: {
+        '50': '100px',
+        '75': '200px',
       },
     },
   },
   plugins: [],
-}
-
+};

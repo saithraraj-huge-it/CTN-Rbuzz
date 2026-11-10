@@ -2,27 +2,24 @@ import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthEvents from './AuthEvents';
-import { serverStatusRef } from './serverStatusRef';
+import {serverStatusRef} from './serverStatusRef';
 
-// const API_ENDPOINT = 'http://117.241.29.133:8086'; 
+// const API_ENDPOINT = 'http://117.241.29.133:8086';
 
-// const API_ENDPOINT = 'https://demo.ctnrbuzz.com';  
+// const API_ENDPOINT = 'https://demo.ctnrbuzz.com';
 
-// const API_ENDPOINT = 'http://demo.ctnrbuzz.com:8086/';  
+// const API_ENDPOINT = 'http://demo.ctnrbuzz.com:8086/';
 
-// const API_ENDPOINT = 'https://beta.ctnrbuzz.com';  
+// const API_ENDPOINT = 'https://beta.ctnrbuzz.com';
 
-const API_ENDPOINT = 'http://beta.ctnrbuzz.com:8086';  
-
+const API_ENDPOINT = 'http://beta.ctnrbuzz.com:8086';
 
 const SERVER_DOWN_MESSAGE =
   'Server is down. Please contact system administrator.';
 
-const SESSION_EXPIRED_MESSAGE =
-  'Your session has expired. Please login again.';
+const SESSION_EXPIRED_MESSAGE = 'Your session has expired. Please login again.';
 
 let isLoggingOut = false;
-
 
 export const axiosPost = axios.create({
   baseURL: API_ENDPOINT,
@@ -31,12 +28,11 @@ export const axiosPost = axios.create({
 
 export const axiosGet = axios.create({
   baseURL: API_ENDPOINT,
-  headers: { 'Content-Type': 'application/json' },
+  headers: {'Content-Type': 'application/json'},
   withCredentials: true,
 });
 
-
-const attachAuthCookie = async (config) => {
+const attachAuthCookie = async config => {
   const authCookie = await AsyncStorage.getItem('auth_cookie');
 
   if (authCookie) {
@@ -49,11 +45,10 @@ const attachAuthCookie = async (config) => {
 axiosPost.interceptors.request.use(attachAuthCookie);
 axiosGet.interceptors.request.use(attachAuthCookie);
 
-
 const callLogoutAPI = async () => {
   try {
     const authCookie = await AsyncStorage.getItem('auth_cookie');
-    
+
     if (authCookie) {
       await axiosPost.post(
         '/api/atomService/secure/updateLogout',
@@ -66,10 +61,9 @@ const callLogoutAPI = async () => {
       );
     }
   } catch (logoutError) {
-    console.log('Logout API Error:', logoutError.message);
+    console.warn('Logout API Error:', logoutError.message);
   }
 };
-
 
 const handleSessionExpired = async () => {
   if (isLoggingOut) return;
@@ -90,7 +84,7 @@ const handleSessionExpired = async () => {
   Toast.show({
     type: 'error',
     text1: SESSION_EXPIRED_MESSAGE,
-    position: 'bottom',
+    position: 'top',
   });
 
   AuthEvents.emit('logout');
@@ -100,8 +94,7 @@ const handleSessionExpired = async () => {
   }, 2000);
 };
 
-
-const responseSuccessHandler = async (response) => {
+const responseSuccessHandler = async response => {
   const message = response?.data?.Message;
 
   if (
@@ -115,42 +108,37 @@ const responseSuccessHandler = async (response) => {
   return response;
 };
 
-
-const responseErrorHandler = async (error) => {
+const responseErrorHandler = async error => {
   if (error.response?.status === 401 || error.response?.status === 404) {
     await handleSessionExpired();
     return Promise.reject(error);
   }
 
-if (!error.response || error.response.status >= 500) {
+  if (!error.response || error.response.status >= 500) {
+    if (!isLoggingOut) {
+      Toast.show({
+        type: 'error',
+        text1: SERVER_DOWN_MESSAGE,
+        position: 'top',
+      });
 
-  if (!isLoggingOut) {
-
-    Toast.show({
-      type: 'error',
-      text1: SERVER_DOWN_MESSAGE,
-      position: 'bottom',
-    });
-
-    if (serverStatusRef?.setServerDown) {
-      serverStatusRef.setServerDown(true);
+      if (serverStatusRef?.setServerDown) {
+        serverStatusRef.setServerDown(true);
+      }
     }
+
+    return Promise.reject(error);
   }
-
-  return Promise.reject(error);
-}
-
 
   return Promise.reject(error);
 };
 
-
 axiosPost.interceptors.response.use(
   responseSuccessHandler,
-  responseErrorHandler
+  responseErrorHandler,
 );
 
 axiosGet.interceptors.response.use(
   responseSuccessHandler,
-  responseErrorHandler
+  responseErrorHandler,
 );

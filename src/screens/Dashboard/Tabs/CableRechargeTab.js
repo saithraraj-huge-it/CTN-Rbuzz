@@ -1,57 +1,40 @@
-import React, { useState } from "react"
-import { ScrollView, View } from "react-native"
-import { useTheme } from "../../../contexts/ThemeContext"
-import { Input } from "../../../components/ui/Input"
-import { Button } from "../../../components/ui/Button"
-import AnimatedDropdown from "../../../components/ui/AnimatedDropdown"
+import React, {useState} from 'react';
+import {ScrollView, View} from 'react-native';
+import {useTheme} from '../../../contexts/ThemeContext';
+import {Input} from '../../../components/ui/Input';
+import {Button} from '../../../components/ui/Button';
+import AnimatedDropdown from '../../../components/ui/AnimatedDropdown';
 
-const CableRechargeTab = ({ navigation }) => {
-  const { theme } = useTheme()
+const CableRechargeTab = ({navigation}) => {
+  const {theme} = useTheme();
 
   // 🔧 State declarations for each field
-  const [refidNo, setRefidNo] = useState("")
-  const [customerName, setCustomerName] = useState("")
-  const [mobile, setMobile] = useState("")
-  const [street1, setStreet1] = useState("")
-  const [street2, setStreet2] = useState("")
-  const [packageName, setPackageName] = useState("")
-  const [packageAmount, setPackageAmount] = useState("")
-  const [voucher, setVoucher] = useState("")
-  const [setupBoxNumber, setSetupBoxNumber] = useState("")
-  const [totAmt, setTotAmt] = useState("")
-  const [enterPin, setEnterPin] = useState("")
-  const [errors, setErrors] = useState({})
+  const [refidNo, setRefidNo] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [street1, setStreet1] = useState('');
+  const [street2, setStreet2] = useState('');
+  const [packageName, setPackageName] = useState('');
+  const [packageAmount, setPackageAmount] = useState('');
+  const [voucher, setVoucher] = useState('');
+  const [setupBoxNumber, setSetupBoxNumber] = useState('');
+  const [totAmt, setTotAmt] = useState('');
+  const [enterPin, setEnterPin] = useState('');
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = () => {
-    const newErrors = {}
+    const newErrors = {};
 
-    if (!refidNo) newErrors.refidNo = "Ref ID is required"
-    if (!totAmt) newErrors.walletAmt = "Amount is required"
-    if (!enterPin) newErrors.enterPin = "PIN is required"
+    if (!refidNo) newErrors.refidNo = 'Ref ID is required';
+    if (!totAmt) newErrors.walletAmt = 'Amount is required';
+    if (!enterPin) newErrors.enterPin = 'PIN is required';
 
-    setErrors(newErrors)
-
-    if (Object.keys(newErrors).length === 0) {
-      console.log("Submit cable recharge", {
-        refidNo,
-        customerName,
-        mobile,
-        street1,
-        street2,
-        packageName,
-        packageAmount,
-        voucher,
-        setupBoxNumber,
-        totAmt,
-        enterPin,
-      })
-    }
-  }
+    setErrors(newErrors);
+  };
 
   return (
     <View className="flex-1">
-      <ScrollView contentContainerStyle={{ padding: 16 }}>
-
+      <ScrollView contentContainerStyle={{padding: 16}}>
         <Input
           value={refidNo}
           onChangeText={setRefidNo}
@@ -156,7 +139,7 @@ const CableRechargeTab = ({ navigation }) => {
         />
       </ScrollView>
     </View>
-  )
-}
+  );
+};
 
-export default CableRechargeTab
+export default CableRechargeTab;

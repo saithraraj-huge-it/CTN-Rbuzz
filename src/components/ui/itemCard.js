@@ -2,7 +2,6 @@ import React from "react"
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native"
 
 const ItemCard = ({ item, onPress }) => {
-    console.log(item,"item");
     
   return (
     <TouchableOpacity style={styles.card} onPress={() => onPress(item)}>

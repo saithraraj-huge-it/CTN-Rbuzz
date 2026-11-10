@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {
   View,
   TouchableWithoutFeedback,
@@ -11,25 +11,26 @@ import {
   Animated,
   ActivityIndicator,
 } from 'react-native';
-import { Easing } from 'react-native';
-import { Header } from '../../components/layout/Header';
-import { useTheme } from '../../contexts/ThemeContext';
-import { Input } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
+import {Easing} from 'react-native';
+import {Header} from '../../components/layout/Header';
+import {useTheme} from '../../contexts/ThemeContext';
+import {Input} from '../../components/ui/Input';
+import {Button} from '../../components/ui/Button';
 import AnimatedDropdown from '../../components/ui/AnimatedDropdown';
 import RechargeBottomSheet from '../../components/ui/BottomScreen';
 import HistoryCard from '../../screens/Dashboard/HistoryCard/PrePaidHisCard';
 import PinModal from '../../components/ui/PinModal';
-import { useData } from '../../contexts/DataProvider';
+import {useData} from '../../contexts/DataProvider';
 import NotificationEvents from '../../utils/NotificationEvents';
 import Toast from 'react-native-toast-message';
-import { validateAmount, validateMobile } from '../../utils/validation';
+import {validateAmount, validateMobile} from '../../utils/validation';
 
-const { height: screenHeight } = Dimensions.get('window');
+const {height: screenHeight} = Dimensions.get('window');
 
-function PrePaidScreen({ navigation }) {
-  const { theme } = useTheme();
-  const { getPendingRecharge, getMasterOptions, createRecharge, loading } = useData();
+function PrePaidScreen({navigation}) {
+  const {theme} = useTheme();
+  const {getPendingRecharge, getMasterOptions, createRecharge, loading} =
+    useData();
 
   const [mobile, setMobile] = useState('');
   const [rechargeAmt, setRechargeAmt] = useState('');
@@ -56,16 +57,13 @@ function PrePaidScreen({ navigation }) {
 
   useEffect(() => {
     const handleNotification = () => {
-      console.log('[Notification] Updating pending recharges');
       fetchPendingRecharges(true);
     };
 
     NotificationEvents.on('getPendingRecharge', handleNotification);
-    console.log('[Notification] Listener registered');
 
     return () => {
       NotificationEvents.off('getPendingRecharge', handleNotification);
-      console.log('[Notification] Listener removed');
     };
   }, []);
 
@@ -75,7 +73,7 @@ function PrePaidScreen({ navigation }) {
         tabBarBadge:
           pendingRecharges && pendingRecharges.length > 0
             ? pendingRecharges.length
-            : "",
+            : '',
       });
     }
   }, [pendingRecharges]);
@@ -104,9 +102,7 @@ function PrePaidScreen({ navigation }) {
     else setPendingLoading(true);
 
     try {
-      console.log('[Fetch] Starting fetchPendingRecharges', { showRefreshing });
       const data = await getPendingRecharge(1);
-      console.log('[Fetch] Data received:', data);
       setPendingRecharges(data || []);
     } catch (error) {
       console.error('[Fetch] Error fetching pending recharges:', error);
@@ -115,7 +111,6 @@ function PrePaidScreen({ navigation }) {
       setPendingLoading(false);
       setRefreshing(false);
       setTopLoading(false);
-      console.log('[Fetch] Loading states after fetch', { pendingLoading: false, refreshing: false });
     }
   };
 
@@ -144,7 +139,7 @@ function PrePaidScreen({ navigation }) {
     setShowPinModal(true);
   };
 
-  const handleRecharge = async (enteredPin) => {
+  const handleRecharge = async enteredPin => {
     if (!enteredPin || enteredPin.length !== 4) {
       setPinError('Please enter complete 4-digit PIN');
       return;
@@ -160,12 +155,12 @@ function PrePaidScreen({ navigation }) {
 
     try {
       const response = await createRecharge(payload);
-      if (response?.data?.result) {
+      if (response?.result) {
         setShowPinModal(false);
         Toast.show({
           type: 'success',
           text1: response.Message,
-          position: 'bottom',
+          position: 'top',
         });
 
         setMobile('');
@@ -174,39 +169,38 @@ function PrePaidScreen({ navigation }) {
         setErrors({});
         fetchPendingRecharges();
 
-         Keyboard.dismiss();
+        Keyboard.dismiss();
 
-  setTimeout(() => {
-    mobileInputRef.current?.focus();
-  }, 400);
-
-
+        setTimeout(() => {
+          mobileInputRef.current?.focus();
+        }, 400);
       } else {
-      const message = response?.Message || '';
+        const message = response?.Message || 'Something went wrong';
+        setPinError(message);
+        setShowPinModal(false);
+        Toast.show({
+          type: 'error',
+          text1: message,
+          position: 'top',
+        });
+      }
+    } catch (error) {
+      const message = error?.Message || 'Something went wrong';
       setPinError(message);
 
       Toast.show({
         type: 'error',
         text1: message,
-        position: 'bottom',
+        position: 'top',
       });
+    } finally {
+      setIsProcessing(false);
     }
-  } catch (error) {
-    const message = error?.Message || 'Something went wrong';
-    setPinError(message);
-
-    Toast.show({
-      type: 'error',
-      text1: message,
-      position: 'bottom',
-    });
-  } finally {
-    setIsProcessing(false);
-  }
-
   };
 
-  const renderHistoryItem = ({ item }) => <HistoryCard item={item} theme={theme} />;
+  const renderHistoryItem = ({item}) => (
+    <HistoryCard item={item} theme={theme} />
+  );
 
   const renderEmptyHistory = () => (
     <View
@@ -215,16 +209,14 @@ function PrePaidScreen({ navigation }) {
         justifyContent: 'center',
         paddingVertical: 40,
         paddingHorizontal: 20,
-      }}
-    >
+      }}>
       <Text
         style={{
           color: theme.colors.textSecondary,
           fontFamily: theme.typography.fontFamily.regular,
           fontSize: theme.typography.fontSize.m,
           textAlign: 'center',
-        }}
-      >
+        }}>
         No records found
       </Text>
     </View>
@@ -233,8 +225,8 @@ function PrePaidScreen({ navigation }) {
   const renderHistoryContent = () => {
     if (pendingLoading && !refreshing) {
       return (
-        <View style={{ paddingVertical: 20, alignItems: 'center' }}>
-          {Array.from({ length: 5 }).map((_, idx) => (
+        <View style={{paddingVertical: 20, alignItems: 'center'}}>
+          {Array.from({length: 5}).map((_, idx) => (
             <HistoryCard key={idx} loading theme={theme} />
           ))}
         </View>
@@ -242,14 +234,16 @@ function PrePaidScreen({ navigation }) {
     }
 
     return (
-      <View style={{ flex: 1, marginTop: 16, paddingBottom: 100 }}>
+      <View style={{flex: 1, marginTop: 16, paddingBottom: 100}}>
         <FlatList
           data={pendingRecharges}
-          keyExtractor={(item) => item.RID?.toString() || Math.random().toString()}
+          keyExtractor={item =>
+            item.RID?.toString() || Math.random().toString()
+          }
           renderItem={renderHistoryItem}
           ListEmptyComponent={renderEmptyHistory}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -277,9 +271,8 @@ function PrePaidScreen({ navigation }) {
       onPress={() => {
         Keyboard.dismiss();
         setActiveDropdown(null);
-      }}
-    >
-      <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      }}>
+      <View style={{flex: 1, backgroundColor: theme.colors.background}}>
         <Header
           title="Prepaid Mobile"
           showBack
@@ -301,21 +294,28 @@ function PrePaidScreen({ navigation }) {
           showTabs
           showHandle
           handleColor={theme.colors.textSecondary}
-          bottomContent={renderHistoryContent()}
-        >
+          bottomContent={renderHistoryContent()}>
           {topLoading ? (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 20,
+              }}>
               <ActivityIndicator size="large" color={theme.colors.primary} />
             </View>
           ) : (
-            <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+            <Animated.View
+              style={{opacity: fadeAnim, transform: [{translateY: slideAnim}]}}>
               <Input
                 ref={mobileInputRef}
                 value={mobile}
-                onChangeText={(text) => {
+                onChangeText={text => {
                   const numericText = text.replace(/[^0-9]/g, '');
                   setMobile(numericText);
-                  if (errors.mobile && numericText) setErrors((prev) => ({ ...prev, mobile: undefined }));
+                  if (errors.mobile && numericText)
+                    setErrors(prev => ({...prev, mobile: undefined}));
                 }}
                 placeholder="Enter your mobile number"
                 keyboardType="numeric"
@@ -333,7 +333,9 @@ function PrePaidScreen({ navigation }) {
                 options={getMasterOptions(1)}
                 selected={selectedOperator}
                 setSelected={setSelectedOperator}
-                onSelect={() => setErrors((prev) => ({ ...prev, operator: undefined }))}
+                onSelect={() =>
+                  setErrors(prev => ({...prev, operator: undefined}))
+                }
                 nextInputRef={amountInputRef}
                 error={errors.operator}
                 theme={theme}
@@ -342,10 +344,11 @@ function PrePaidScreen({ navigation }) {
               <Input
                 ref={amountInputRef}
                 value={rechargeAmt}
-                onChangeText={(text) => {
+                onChangeText={text => {
                   const numericText = text.replace(/[^0-9.]/g, '');
                   setRechargeAmt(numericText);
-                  if (errors.rechargeAmt && numericText) setErrors((prev) => ({ ...prev, rechargeAmt: undefined }));
+                  if (errors.rechargeAmt && numericText)
+                    setErrors(prev => ({...prev, rechargeAmt: undefined}));
                 }}
                 placeholder="Recharge Amount ₹"
                 keyboardType="numeric"
@@ -372,7 +375,7 @@ function PrePaidScreen({ navigation }) {
           pinError={pinError}
           isProcessing={isProcessing}
           theme={theme}
-         onSubmit={enteredPin => handleRecharge(enteredPin)}
+          onSubmit={enteredPin => handleRecharge(enteredPin)}
         />
       </View>
     </TouchableWithoutFeedback>

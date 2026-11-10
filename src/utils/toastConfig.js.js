@@ -1,21 +1,28 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import Icon from '../theme/IconsProvider';
-import { useTheme } from '../contexts/ThemeContext';
+import {useTheme} from '../contexts/ThemeContext';
 
-const ToastView = ({ text1, type = 'success' }) => {
-  const { theme } = useTheme();
-
+const ToastView = ({text1, type = 'success'}) => {
+  const {theme} = useTheme();
   const isError = type === 'error';
 
   return (
     <View
       style={[
         styles.toastContainer,
-        { backgroundColor: isError ? 'rgba(255,0,0,0.45)' : 'rgba(0,0,0,0.40)' },
-      ]}
-    >
-      <View style={styles.iconWrap}>
+        {
+          backgroundColor: isError ? '#B42318' : '#166534',
+          borderLeftColor: isError ? '#FCA5A5' : '#86EFAC',
+        },
+      ]}>
+      <View
+        style={[
+          styles.iconWrap,
+          {
+            backgroundColor: isError ? '#FEE2E2' : '#DCFCE7',
+          },
+        ]}>
         <Icon
           icon={isError ? 'LoginLogo' : 'LoginLogo'}
           size={18}
@@ -26,12 +33,11 @@ const ToastView = ({ text1, type = 'success' }) => {
         style={[
           styles.message,
           {
-            fontFamily: theme.typography.fontFamily.regular,
+            fontFamily: theme.typography.fontFamily.medium,
             fontSize: theme.typography.fontSize.s,
           },
         ]}
-        numberOfLines={2}
-      >
+        numberOfLines={2}>
         {text1}
       </Text>
     </View>
@@ -39,10 +45,10 @@ const ToastView = ({ text1, type = 'success' }) => {
 };
 
 const toastConfig = {
-  success: ({ text1 }) => (
+  success: ({text1}) => (
     <ToastView text1={text1} type="success" />
   ),
-  error: ({ text1 }) => (
+  error: ({text1}) => (
     <ToastView text1={text1} type="error" />
   ),
 };
@@ -51,28 +57,33 @@ const styles = StyleSheet.create({
   toastContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    width: '90%',
+    alignSelf: 'center',
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
 
-    // shadow
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 6,
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 6,
   },
 
   iconWrap: {
-    width: 18,
-    height: 18,
-    borderRadius: 18,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
   },
 
   message: {
-    flexShrink: 1,
-    color: '#fff',
+    flex: 1,
+    color: '#FFFFFF',
+    lineHeight: 20,
   },
 });
 

@@ -3,8 +3,6 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import Skeleton from '../../../components/ui/Skeleton';
 
 const HistoryCard = ({item, theme, onPress, loading = false}) => {
-  console.log(item,"item");
-  
   const getStatusColor = status => {
     switch ((status || '').toLowerCase()) {
       case 'success':
@@ -39,7 +37,7 @@ const HistoryCard = ({item, theme, onPress, loading = false}) => {
       return date.toLocaleTimeString('en-IN', {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: true, 
+        hour12: true,
       });
     } catch {
       return '';
@@ -134,7 +132,6 @@ const HistoryCard = ({item, theme, onPress, loading = false}) => {
             </View>
 
             {item?.CNM && (
-            
               <View
                 style={{
                   flexDirection: 'row',
@@ -242,21 +239,20 @@ const HistoryCard = ({item, theme, onPress, loading = false}) => {
               ellipsizeMode="tail">
               {item?.MNO || ''}
             </Text>
-         
           </View>
 
-             {!item?.CNM && item?.SPN && (
-              <Text
-                style={{
-                  fontSize: theme.typography.fontSize.s,
-                  color: theme?.colors?.textSecondary,
-                  fontFamily: theme.typography.fontFamily.regular,
-                  flexShrink: 1,
-                }}
-                ellipsizeMode="tail">
-                {item?.SPN || ''}
-              </Text>
-            )}
+          {!item?.CNM && item?.SPN && (
+            <Text
+              style={{
+                fontSize: theme.typography.fontSize.s,
+                color: theme?.colors?.textSecondary,
+                fontFamily: theme.typography.fontFamily.regular,
+                flexShrink: 1,
+              }}
+              ellipsizeMode="tail">
+              {item?.SPN || ''}
+            </Text>
+          )}
 
           <View
             style={{

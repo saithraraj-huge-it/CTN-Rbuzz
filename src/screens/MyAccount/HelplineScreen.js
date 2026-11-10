@@ -6,13 +6,12 @@ import {Header} from '../../components/layout/Header';
 import Icon from '../../theme/IconsProvider';
 import {View, Text, TouchableOpacity, Linking} from 'react-native';
 import React from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import {useAuth} from '../../contexts/AuthContext';
 
 const HelplineScreen = () => {
   const {theme} = useTheme();
   const navigation = useNavigation();
-   const {user} = useAuth();
-    console.log(user,"us");
+  const {user} = useAuth();
 
   const handlePress = title => {
     if (title.includes('@')) {
@@ -37,16 +36,17 @@ const HelplineScreen = () => {
         disabled={!isInteractive}
         className="flex-row items-center justify-between py-1">
         <View className="flex-row items-center flex-1">
-          <View
-            className="w-10 h-10 rounded-full justify-center items-center mr-2">
+          <View className="w-10 h-10 rounded-full justify-center items-center mr-2">
             <Icon icon={icon} size={25} color={theme.colors.primary} />
           </View>
           <View className="flex-1">
             <Text
-              style={{color: theme.colors.text,
-                fontFamily:theme.typography.fontFamily.regular,fontSize:theme.typography.fontSize.m
+              style={{
+                color: theme.colors.text,
+                fontFamily: theme.typography.fontFamily.regular,
+                fontSize: theme.typography.fontSize.m,
               }}
-             allowFontScaling={false}>
+              allowFontScaling={false}>
               {title}
             </Text>
             {description && (
@@ -59,7 +59,6 @@ const HelplineScreen = () => {
             )}
           </View>
         </View>
-        
       </TouchableOpacity>
     );
   };
@@ -74,12 +73,8 @@ const HelplineScreen = () => {
       />
 
       <View className="mb-2 px-5 mt-2">
-        <SettingItem icon="SmsIcon"  title={user?.email || 'No Email Found'}/>
-      <SettingItem
-  icon="callIcon"
-  title={user?.phNo || 'No Mobile Number'}
-/>
-
+        <SettingItem icon="SmsIcon" title={user?.email || 'No Email Found'} />
+        <SettingItem icon="callIcon" title={user?.phNo || 'No Mobile Number'} />
       </View>
     </View>
   );

@@ -23,7 +23,6 @@ export default function App() {
   
 
 const onMessageReceived = async (remoteMessage) => {
-  console.log('Foreground notification:', remoteMessage);
 
   const apiToTrigger = remoteMessage.data?.api;
 
@@ -60,7 +59,7 @@ const onMessageReceived = async (remoteMessage) => {
 
     // Background handler (for headless task)
     messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Background FCM:', remoteMessage);
+      console.warn('Background FCM:', remoteMessage);
     });
 
     return () => {

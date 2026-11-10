@@ -33,14 +33,14 @@ export const ConnectivityProvider = ({ children }) => {
             type: "error",
             text1: "No Internet Connection",
             text2: "Please check your connection and try again",
-            position: 'bottom',
+            position: 'top',
             visibilityTime: 2000,
           })
         } else {
           Toast.show({
             type: "success",
             text1: "Connected",
-            position: 'bottom',
+            position: 'top',
             text2: "Your internet connection has been restored",
             visibilityTime: 2000,
           })

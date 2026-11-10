@@ -23,6 +23,7 @@ import ComplaintScreen from '../screens/MyAccount/ComplaintScreen';
 import HelplineScreen from '../screens/MyAccount/HelplineScreen';
 import ChangePinScreen from '../screens/MyAccount/ChangePinScreen';
 import AccSettingsScreen from '../screens/MyAccount/AccSettingsScreen';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Stack = createSharedElementStackNavigator();
 
@@ -43,6 +44,10 @@ const RootNavigator = () => {
   if (authLoading || isSplashVisible) return <SplashScreen />;
 
   return (
+     <SafeAreaView
+    style={{ flex: 1, backgroundColor: '#FFFFFF' }}
+    edges={['top', 'bottom']}
+  >
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
@@ -73,6 +78,7 @@ const RootNavigator = () => {
         <Stack.Screen name="Auth" component={AuthNavigator} />
       )}
     </Stack.Navigator>
+    </SafeAreaView>
   );
 };
 

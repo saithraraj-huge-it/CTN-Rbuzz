@@ -29,12 +29,9 @@ useEffect(() => {
   const loadUser = async () => {
     try {
       const storedCookie = await AsyncStorage.getItem('auth_cookie');
-      console.log(storedCookie,"storedCookie");
       
       const storedMobile = await AsyncStorage.getItem('user_mobile');
       const storedUserInfo = await AsyncStorage.getItem('user_info');
-
-      console.log(storedUserInfo,"storedUserInfo");
       
 
       if (storedCookie && storedMobile && storedUserInfo) {
@@ -80,9 +77,6 @@ useEffect(() => {
           deviceName,
         },
       );
-
-      console.log('Login API response:', response.data);
-
       if (response.data.result === true) {
         const userInfo = {
           ...response.data?.info,
@@ -116,7 +110,6 @@ useEffect(() => {
         };
       }
     } catch (error) {
-      console.log('Axios Error:', error.message);
       return {success: false, message: 'Something went wrong'};
     }
   };
@@ -135,11 +128,9 @@ useEffect(() => {
             },
           },
         );
-
-        console.log('Logout API Response:', response.data);
       }
     } catch (error) {
-      console.log('Logout API Error:', error.message);
+      console.error('Logout API Error:', error.message);
     }
 
     await AsyncStorage.multiRemove([
@@ -167,7 +158,6 @@ useEffect(() => {
         throw new Error(message);
       }
     } catch (error) {
-      console.log('Forgot Password Error:', error.message);
       throw error;
     }
   };
@@ -188,8 +178,6 @@ useEffect(() => {
           },
         },
       );
-      console.log(response.data, 'forgot');
-
       if (response?.data?.result === true) {
         return response.data;
       } else {

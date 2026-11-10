@@ -1,24 +1,23 @@
-import React, { useRef } from 'react';
+
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   Dimensions,
-  ScrollView,
-  UIManager,
-  findNodeHandle,
+  FlatList,
   ActivityIndicator,
+  Modal,
+  Pressable,
 } from 'react-native';
-import Animated, {
-  useSharedValue,
-  withTiming,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
+
 import Icon from '../../theme/IconsProvider';
 
-const screenHeight = Dimensions.get('window').height;
-const DROPDOWN_HEIGHT = screenHeight * 0.4;
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } =
+  Dimensions.get('window');
+
 const ITEM_HEIGHT = 48;
+const MAX_DROPDOWN_HEIGHT = SCREEN_HEIGHT * 0.4;
 
 const AnimatedDropdown = ({
   id,
@@ -34,50 +33,105 @@ const AnimatedDropdown = ({
   theme,
   loading = false,
 }) => {
-  const isOpen = activeDropdown === id;
   const buttonRef = useRef(null);
-  const scale = useSharedValue(isOpen ? 1 : 0);
-  const [dropdownTop, setDropdownTop] = React.useState(0);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scaleY: scale.value }],
-    opacity: scale.value,
-  }));
+  const [dropdownPosition, setDropdownPosition] = useState({
+    top: 0,
+    left: 0,
+    width: 0,
+    height: 0,
+  });
 
-  React.useEffect(() => {
-    scale.value = withTiming(isOpen ? 1 : 0, { duration: 200 });
-  }, [isOpen]);
+  const isOpen = activeDropdown === id;
 
-  const handleSelect = (item) => {
-    setSelected(item);
-    onSelect?.(item);
+  const closeDropdown = () => {
     setActiveDropdown(null);
-
-    setTimeout(() => {
-    if (nextInputRef?.current) {
-      nextInputRef.current.focus();
-    }
-  }, 250);
   };
 
   const toggleDropdown = () => {
     if (isOpen) {
-      setActiveDropdown(null);
+      closeDropdown();
       return;
     }
 
-    UIManager.measure(
-      findNodeHandle(buttonRef.current),
-      (x, y, width, height, pageX, pageY) => {
-        const top = pageY - DROPDOWN_HEIGHT;
-        setDropdownTop(Math.max(0, top));
+    buttonRef.current?.measureInWindow(
+      (x, y, width, height) => {
+        const dropdownHeight = Math.min(
+          MAX_DROPDOWN_HEIGHT,
+          Math.max(ITEM_HEIGHT, options.length * ITEM_HEIGHT)
+        );
+
+        const spaceBelow = SCREEN_HEIGHT - (y + height);
+        const openAbove = spaceBelow < dropdownHeight;
+
+        let top = openAbove
+          ? y - dropdownHeight
+          : y + height;
+
+        top = Math.max(
+          0,
+          Math.min(top, SCREEN_HEIGHT - dropdownHeight)
+        );
+
+        const left = Math.max(
+          0,
+          Math.min(x, SCREEN_WIDTH - width)
+        );
+
+        setDropdownPosition({
+          top,
+          left,
+          width,
+          height: dropdownHeight,
+        });
+
         setActiveDropdown(id);
       }
     );
   };
 
+  const handleSelect = item => {
+    setSelected(item);
+    onSelect?.(item);
+    closeDropdown();
+
+    setTimeout(() => {
+      nextInputRef?.current?.focus?.();
+    }, 150);
+  };
+
+  const renderItem = ({ item, index }) => (
+    <TouchableOpacity
+      activeOpacity={0.6}
+      onPress={() => handleSelect(item)}
+      style={{
+        height: ITEM_HEIGHT,
+        paddingHorizontal: 16,
+        justifyContent: 'center',
+        backgroundColor: theme.colors.card,
+        borderBottomWidth:
+          index === options.length - 1 ? 0 : 0.5,
+        borderBottomColor: '#E5E7EB',
+      }}
+    >
+      <Text
+        style={{
+          color: theme.colors.text,
+          fontFamily: theme.typography.fontFamily.regular,
+          fontSize: theme.typography.fontSize.s,
+        }}
+        allowFontScaling={false}
+      >
+        {item.label}
+      </Text>
+    </TouchableOpacity>
+  );
+
   return (
     <View className="w-full relative mb-4">
+
+      {/* DROPDOWN BUTTON */}
+
       <TouchableOpacity
         ref={buttonRef}
         activeOpacity={0.8}
@@ -85,22 +139,31 @@ const AnimatedDropdown = ({
         className="w-full px-4 py-3 rounded-lg border flex-row items-center justify-between"
         style={{
           backgroundColor: theme.colors.primaryLight,
-          borderColor: error ? theme.colors.error : theme.colors.primaryLight,
-           minHeight: 55,
+          borderColor: error
+            ? theme.colors.error
+            : theme.colors.primaryLight,
+          minHeight: 55,
         }}
       >
         <Text
           style={{
-            fontFamily: selected ? theme.typography.fontFamily.regular : theme.typography.fontFamily.regular,
+            fontFamily: theme.typography.fontFamily.regular,
             color: selected ? '#000' : theme.colors.textSecondary,
-            fontSize:theme.typography.fontSize.m
+            fontSize: theme.typography.fontSize.m,
           }}
           allowFontScaling={false}
         >
           {selected?.label ?? placeholder}
         </Text>
-        <Icon icon="downArrow" size={20} color={theme.colors.text} />
+
+        <Icon
+          icon="downArrow"
+          size={20}
+          color={theme.colors.text}
+        />
       </TouchableOpacity>
+
+      {/* ERROR */}
 
       {error && (
         <Text
@@ -108,106 +171,121 @@ const AnimatedDropdown = ({
             color: theme.colors.error,
             marginTop: 4,
             fontFamily: theme.typography.fontFamily.regular,
-            fontSize:theme.typography.fontSize.xs
+            fontSize: theme.typography.fontSize.xs,
           }}
-          allowFontScaling={false}
         >
           {error}
         </Text>
       )}
 
-      {isOpen && (
-        <Animated.View
-          style={[
-            {
+      {/* DROPDOWN MODAL */}
+
+      <Modal
+        visible={isOpen}
+        transparent
+        animationType="none"
+        statusBarTranslucent
+        onRequestClose={closeDropdown}
+      >
+        <View style={{ flex: 1 }}>
+
+          {/* OUTSIDE CLICK */}
+
+          <Pressable
+            onPress={closeDropdown}
+            style={{
               position: 'absolute',
-              top: dropdownTop,
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+
+          {/* DROPDOWN LIST */}
+
+          <View
+            style={{
+              position: 'absolute',
+              top: dropdownPosition.top,
+              left: dropdownPosition.left,
+              width: dropdownPosition.width,
+              height: dropdownPosition.height,
               backgroundColor: theme.colors.background,
-              maxHeight: DROPDOWN_HEIGHT,
-              width: '100%',
-              zIndex: 50,
               borderRadius: 12,
               overflow: 'hidden',
+              elevation: 15,
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.15,
-              shadowRadius: 10,
-              elevation: 6,
-            },
-            animatedStyle,
-          ]}
-        >
-          {loading ? (
-  <View style={{ height: ITEM_HEIGHT * 3, justifyContent: 'center', alignItems: 'center' }}>
-    <ActivityIndicator size="small" color={theme.colors.primary} />
-    <Text
-      style={{
-        marginTop: 10,
-        color: theme.colors.textSecondary,
-        fontFamily: theme.typography.fontFamily.regular,
-        fontSize:theme.typography.fontSize.xs
-      }}
-    >
-      Loading...
-    </Text>
-  </View>
-) : (
-  
-          <ScrollView
-  bounces={false}
-  showsVerticalScrollIndicator={false}
-  contentContainerStyle={{elevation: 4}}
->
-  {options.length > 0 ? (
-    options.map((item, index) => (
-      <TouchableOpacity
-        key={index}
-        onPress={() => handleSelect(item)}
-        style={{
-          height: ITEM_HEIGHT,
-          paddingHorizontal: 16,
-          justifyContent: 'center',
-          backgroundColor: theme.colors.card,
-        }}
-      >
-        <Text
-          style={{
-            color: theme.colors.text,
-            fontFamily: theme.typography.fontFamily.regular,
-            fontSize: theme.typography.fontSize.s,
-          }}
-          allowFontScaling={false}
-        >
-          {item.label}
-        </Text>
-      </TouchableOpacity>
-    ))
-  ) : (
-    <View
-      style={{
-        height: ITEM_HEIGHT,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: theme.colors.card,
-      }}
-    >
-      <Text
-        style={{
-          color: theme.colors.textSecondary,
-          fontFamily: theme.typography.fontFamily.regular,
-          fontSize: theme.typography.fontSize.s,
-        }}
-        allowFontScaling={false}
-      >
-        No options available
-      </Text>
-    </View>
-  )}
-</ScrollView>
+              shadowOpacity: 0.2,
+              shadowRadius: 8,
+            }}
+          >
+            {loading ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <ActivityIndicator
+                  size="small"
+                  color={theme.colors.primary}
+                />
 
-)}
-        </Animated.View>
-      )}
+                <Text
+                  style={{
+                    marginTop: 10,
+                    color: theme.colors.textSecondary,
+                    fontFamily: theme.typography.fontFamily.regular,
+                  }}
+                >
+                  Loading...
+                </Text>
+              </View>
+            ) : (
+              <FlatList
+                data={options}
+                renderItem={renderItem}
+                keyExtractor={(item, index) =>
+                  String(item.value ?? item.id ?? index)
+                }
+                showsVerticalScrollIndicator
+                nestedScrollEnabled
+                keyboardShouldPersistTaps="always"
+                bounces={false}
+                initialNumToRender={15}
+                maxToRenderPerBatch={15}
+                windowSize={7}
+                getItemLayout={(data, index) => ({
+                  length: ITEM_HEIGHT,
+                  offset: ITEM_HEIGHT * index,
+                  index,
+                })}
+                ListEmptyComponent={
+                  <View
+                    style={{
+                      height: ITEM_HEIGHT,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: theme.colors.textSecondary,
+                        fontFamily: theme.typography.fontFamily.regular,
+                      }}
+                    >
+                      No options available
+                    </Text>
+                  </View>
+                }
+              />
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

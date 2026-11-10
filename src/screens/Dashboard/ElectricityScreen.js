@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   TouchableWithoutFeedback,
@@ -11,25 +11,31 @@ import {
   Animated,
   ActivityIndicator,
 } from 'react-native';
-import { Header } from '../../components/layout/Header';
-import { useTheme } from '../../contexts/ThemeContext';
-import { Input } from '../../components/ui/Input';
-import { Button } from '../../components/ui/Button';
+import {Header} from '../../components/layout/Header';
+import {useTheme} from '../../contexts/ThemeContext';
+import {Input} from '../../components/ui/Input';
+import {Button} from '../../components/ui/Button';
 import AnimatedDropdown from '../../components/ui/AnimatedDropdown';
 import RechargeBottomSheet from '../../components/ui/BottomScreen';
 import HistoryCard from './HistoryCard/PrePaidHisCard';
-import { useData } from '../../contexts/DataProvider';
+import {useData} from '../../contexts/DataProvider';
 import PinModal from '../../components/ui/PinModal';
-import { Easing } from 'react-native';
+import {Easing} from 'react-native';
 import NotificationEvents from '../../utils/NotificationEvents';
 import Toast from 'react-native-toast-message';
-import { validateAmount, validateEmail, validateMobile,validateServiceNumberFlexible } from '../../utils/validation';
+import {
+  validateAmount,
+  validateEmail,
+  validateMobile,
+  validateServiceNumberFlexible,
+} from '../../utils/validation';
 
-const { height: screenHeight } = Dimensions.get('window');
+const {height: screenHeight} = Dimensions.get('window');
 
-function ElectricityScreen({ navigation }) {
-  const { theme } = useTheme();
-  const { getPendingService, getMasterOptions, createElectricityService } = useData();
+function ElectricityScreen({navigation}) {
+  const {theme} = useTheme();
+  const {getPendingService, getMasterOptions, createElectricityService} =
+    useData();
 
   const [serviceNumber, setServiceNumber] = useState('');
   const [rechargeAmt, setRechargeAmt] = useState('');
@@ -38,8 +44,6 @@ function ElectricityScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [enterPin, setEnterPin] = useState('');
   const [selectedProvider, setSelectedProvider] = useState(null);
-  console.log(selectedProvider,"ele");
-  
   const [errors, setErrors] = useState({});
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [showPinModal, setShowPinModal] = useState(false);
@@ -55,32 +59,27 @@ function ElectricityScreen({ navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
 
-
-const serviceNumberRef = useRef(null);
-const amountRef = useRef(null);
-const customerNameRef = useRef(null);
-const contactNumberRef = useRef(null);
-const emailRef = useRef(null);
+  const serviceNumberRef = useRef(null);
+  const amountRef = useRef(null);
+  const customerNameRef = useRef(null);
+  const contactNumberRef = useRef(null);
+  const emailRef = useRef(null);
 
   useEffect(() => {
     fetchPendingRecharges();
   }, []);
 
-
   useEffect(() => {
-  const handleNotification = () => {
-    console.log('[Notification] Updating pending electricity bills');
-    fetchPendingRecharges(true);
-  };
+    const handleNotification = () => {
+      fetchPendingRecharges(true);
+    };
 
-  NotificationEvents.on('getPendingRecharge', handleNotification);
-  console.log('[Notification] Listener registered');
+    NotificationEvents.on('getPendingRecharge', handleNotification);
 
-  return () => {
-    NotificationEvents.off('getPendingRecharge', handleNotification);
-    console.log('[Notification] Listener removed');
-  };
-}, []);
+    return () => {
+      NotificationEvents.off('getPendingRecharge', handleNotification);
+    };
+  }, []);
 
   useEffect(() => {
     if (!topLoading) {
@@ -102,17 +101,16 @@ const emailRef = useRef(null);
   }, [topLoading]);
 
   useEffect(() => {
-  const refreshFromNotification = () => {
-    console.log('[Notification] Recalling getPendingRecharge');
-    fetchPendingRecharges(4);
-  };
+    const refreshFromNotification = () => {
+      fetchPendingRecharges(4);
+    };
 
-  NotificationEvents.on('getPendingRecharge', refreshFromNotification);
+    NotificationEvents.on('getPendingRecharge', refreshFromNotification);
 
-  return () => {
-    NotificationEvents.off('getPendingRecharge', refreshFromNotification);
-  };
-}, []);
+    return () => {
+      NotificationEvents.off('getPendingRecharge', refreshFromNotification);
+    };
+  }, []);
 
   const fetchPendingRecharges = async (showRefreshing = false) => {
     if (showRefreshing) setRefreshing(true);
@@ -126,40 +124,34 @@ const emailRef = useRef(null);
     } finally {
       setPendingLoading(false);
       setRefreshing(false);
-      setTopLoading(false)
+      setTopLoading(false);
     }
   };
-
 
   const validate = () => {
     const newErrors = {};
     if (!selectedProvider) newErrors.provider = 'Provider is required';
-//     if (!validateServiceNumber(serviceNumber)) {
-//   newErrors.serviceNumber =
-//     'Service number must be 16 characters';
-// }
 
-if (!validateServiceNumberFlexible(serviceNumber, 1, 25)) {
-  newErrors.serviceNumber = 'Service number is required';
-}
+    if (!validateServiceNumberFlexible(serviceNumber, 1, 25)) {
+      newErrors.serviceNumber = 'Service number is required';
+    }
 
- if (!validateAmount(rechargeAmt, 10)) {
-  newErrors.rechargeAmt = 'Please enter a valid amount';
-}
+    if (!validateAmount(rechargeAmt, 10)) {
+      newErrors.rechargeAmt = 'Please enter a valid amount';
+    }
 
-if (!customerName?.trim()) {
-  newErrors.customerName = 'Customer name is required';
-}
+    if (!customerName?.trim()) {
+      newErrors.customerName = 'Customer name is required';
+    }
 
-if (!validateMobile(contactNumber)) {
-  newErrors.contactNumber = 'Please enter a valid 10-digit mobile number';
-}
+    if (!validateMobile(contactNumber)) {
+      newErrors.contactNumber = 'Please enter a valid 10-digit mobile number';
+    }
 
+    if (!validateEmail(email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
 
-if (!validateEmail(email)) {
-  newErrors.email = 'Please enter a valid email address';
-}
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -190,21 +182,18 @@ if (!validateEmail(email)) {
       customerName,
       email,
     };
-   console.log(payload,"electricitypauyload");
 
     try {
       const response = await createElectricityService(payload);
 
-      if (response?.data?.result) {
+      if (response?.result) {
         setShowPinModal(false);
-         Toast.show({
+        Toast.show({
           type: 'success',
           text1: response.Message,
-         position: 'bottom',
+          position: 'top',
         });
 
-        console.log(response,"electricityrespo");
-        
         setServiceNumber('');
         setRechargeAmt('');
         setCustomerName('');
@@ -215,38 +204,36 @@ if (!validateEmail(email)) {
         setErrors({});
         fetchPendingRecharges();
 
-          Keyboard.dismiss();
+        Keyboard.dismiss();
 
-  setTimeout(() => {
-    serviceNumberRef.current?.focus();
-  }, 400);
-
+        setTimeout(() => {
+          serviceNumberRef.current?.focus();
+        }, 400);
       } else {
-      const message = response?.Message || 'Transaction failed';
+        const message = response?.Message || 'Transaction failed';
+        setPinError(message);
+
+        Toast.show({
+          type: 'error',
+          text1: message,
+          position: 'top',
+        });
+      }
+    } catch (error) {
+      const message = error?.Message || 'Something went wrong';
       setPinError(message);
 
       Toast.show({
         type: 'error',
         text1: message,
-        position: 'bottom',
+        position: 'top',
       });
-    }
-  } catch (error) {
-    const message = error?.Message || 'Something went wrong';
-    setPinError(message);
-
-    Toast.show({
-      type: 'error',
-      text1: message,
-      position: 'bottom',
-    });
-  } finally {
+    } finally {
       setIsProcessing(false);
     }
   };
 
-
-  const renderHistoryItem = ({ item }) => (
+  const renderHistoryItem = ({item}) => (
     <HistoryCard item={item} theme={theme} />
   );
 
@@ -262,10 +249,10 @@ if (!validateEmail(email)) {
         style={{
           color: theme.colors.textSecondary,
           fontFamily: theme.typography.fontFamily.regular,
-                   fontSize:theme.typography.fontSize.m,
+          fontSize: theme.typography.fontSize.m,
           textAlign: 'center',
         }}>
-       No records found
+        No records found
       </Text>
     </View>
   );
@@ -273,8 +260,8 @@ if (!validateEmail(email)) {
   const renderHistoryContent = () => {
     if (pendingLoading && !refreshing) {
       return (
-        <View style={{ paddingVertical: 20, alignItems: 'center' }}>
-          {Array.from({ length: 5 }).map((_, idx) => (
+        <View style={{paddingVertical: 20, alignItems: 'center'}}>
+          {Array.from({length: 5}).map((_, idx) => (
             <HistoryCard key={idx} loading theme={theme} />
           ))}
         </View>
@@ -282,7 +269,7 @@ if (!validateEmail(email)) {
     }
 
     return (
-      <View style={{ flex: 1, marginTop: 16, paddingBottom: 100 }}>
+      <View style={{flex: 1, marginTop: 16, paddingBottom: 100}}>
         <FlatList
           data={pendingRecharges}
           keyExtractor={item =>
@@ -298,11 +285,9 @@ if (!validateEmail(email)) {
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-               onRefresh={async () => {
-      console.log('[PullRefresh] User triggered refresh');
-      await fetchPendingRecharges(true);
-      console.log('[PullRefresh] Refresh completed');
-    }}
+              onRefresh={async () => {
+                await fetchPendingRecharges(true);
+              }}
               colors={[theme.colors.primary]}
               tintColor={theme.colors.primary}
             />
@@ -327,7 +312,7 @@ if (!validateEmail(email)) {
         Keyboard.dismiss();
         setActiveDropdown(null);
       }}>
-      <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <View style={{flex: 1, backgroundColor: theme.colors.background}}>
         <Header
           title="Electricity"
           showBack
@@ -350,11 +335,18 @@ if (!validateEmail(email)) {
           handleColor={theme.colors.textSecondary}
           bottomContent={renderHistoryContent()}>
           {topLoading ? (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 20,
+              }}>
               <ActivityIndicator size="large" color={theme.colors.primary} />
             </View>
           ) : (
-            <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+            <Animated.View
+              style={{opacity: fadeAnim, transform: [{translateY: slideAnim}]}}>
               <AnimatedDropdown
                 id="provider"
                 placeholder="Select Service Provider"
@@ -364,7 +356,7 @@ if (!validateEmail(email)) {
                 selected={selectedProvider}
                 setSelected={setSelectedProvider}
                 onSelect={item => {
-                  setErrors(prev => ({ ...prev, provider: undefined }));
+                  setErrors(prev => ({...prev, provider: undefined}));
                 }}
                 nextInputRef={serviceNumberRef}
                 error={errors.provider}
@@ -372,17 +364,17 @@ if (!validateEmail(email)) {
               />
 
               <Input
-               ref={serviceNumberRef}
+                ref={serviceNumberRef}
                 value={serviceNumber}
                 // onChangeText={text => {
                 //   setServiceNumber(text);
                 //   setErrors(prev => ({ ...prev, serviceNumber: undefined }));
                 // }}
-                  onChangeText={text => {
-    const cleanedText = text.replace(/[^a-zA-Z0-9]/g, '');
-    setServiceNumber(cleanedText);
-    setErrors(prev => ({ ...prev, serviceNumber: undefined }));
-  }}
+                onChangeText={text => {
+                  const cleanedText = text.replace(/[^a-zA-Z0-9]/g, '');
+                  setServiceNumber(cleanedText);
+                  setErrors(prev => ({...prev, serviceNumber: undefined}));
+                }}
                 placeholder="Enter Service Number"
                 keyboardType="default"
                 autoCapitalize="none"
@@ -393,11 +385,11 @@ if (!validateEmail(email)) {
               />
 
               <Input
-              ref={amountRef}  
+                ref={amountRef}
                 value={rechargeAmt}
                 onChangeText={text => {
                   setRechargeAmt(text);
-                  setErrors(prev => ({ ...prev, rechargeAmt: undefined }));
+                  setErrors(prev => ({...prev, rechargeAmt: undefined}));
                 }}
                 placeholder="Enter Amount ₹"
                 keyboardType="numeric"
@@ -409,10 +401,10 @@ if (!validateEmail(email)) {
 
               <Input
                 ref={customerNameRef}
-                  value={customerName} 
+                value={customerName}
                 onChangeText={text => {
                   setCustomerName(text);
-                  setErrors(prev => ({ ...prev, customerName: undefined }));
+                  setErrors(prev => ({...prev, customerName: undefined}));
                 }}
                 placeholder="Enter Customer Name"
                 autoCapitalize="words"
@@ -422,11 +414,11 @@ if (!validateEmail(email)) {
               />
 
               <Input
-               ref={contactNumberRef}
+                ref={contactNumberRef}
                 value={contactNumber}
                 onChangeText={text => {
                   setContactNumber(text);
-                  setErrors(prev => ({ ...prev, contactNumber: undefined }));
+                  setErrors(prev => ({...prev, contactNumber: undefined}));
                 }}
                 placeholder="Enter Contact Number"
                 keyboardType="numeric"
@@ -437,11 +429,11 @@ if (!validateEmail(email)) {
               />
 
               <Input
-               ref={emailRef}
+                ref={emailRef}
                 value={email}
                 onChangeText={text => {
                   setEmail(text);
-                  setErrors(prev => ({ ...prev, email: undefined }));
+                  setErrors(prev => ({...prev, email: undefined}));
                 }}
                 placeholder="Enter Email ID"
                 keyboardType="email-address"
@@ -451,9 +443,8 @@ if (!validateEmail(email)) {
                 onFocus={() => setActiveDropdown(null)}
               />
 
-
               <Button
-               className="mt-3"
+                className="mt-3"
                 title="Pay Bill"
                 theme={theme}
                 onPress={handleSubmit}

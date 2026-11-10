@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,18 +7,18 @@ import {
   RefreshControl,
 } from 'react-native';
 import InlineDateRangePicker from '../../../components/ui/InlineDateRange';
-import { Button } from '../../../components/ui/Button';
-import { useTheme } from '../../../contexts/ThemeContext';
-import { useData } from '../../../contexts/DataProvider';
+import {Button} from '../../../components/ui/Button';
+import {useTheme} from '../../../contexts/ThemeContext';
+import {useData} from '../../../contexts/DataProvider';
 import dayjs from 'dayjs';
 import Icons from '../../../theme/IconsProvider';
 import HistoryCard from '../HistoryCard/PrePaidHisCard';
 import NotificationEvents from '../../../utils/NotificationEvents';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 
-const ComplaintListTab = ({ navigation }) => {
-  const { theme } = useTheme();
-  const { getComplaintReport } = useData();
+const ComplaintListTab = ({navigation}) => {
+  const {theme} = useTheme();
+  const {getComplaintReport} = useData();
   const today = dayjs().format('YYYY-MM-DD');
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
@@ -29,54 +29,49 @@ const ComplaintListTab = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-  handleFilter(); 
-}, []);
+    handleFilter();
+  }, []);
 
-
-useEffect(() => {
-  const refreshFromNotification = async () => {
-    console.log('[Notification] Refreshing ComplaintListTab');
-    setRefreshing(true);
-    const result = await getComplaintReport(startDate, endDate);
-    setReports(result || []);
-    setRefreshing(false);
-  };
-
-  NotificationEvents.on('getPendingRecharge', refreshFromNotification);
-
-  return () => {
-    NotificationEvents.off('getPendingRecharge', refreshFromNotification);
-  };
-}, [startDate, endDate]);
-
-useFocusEffect(
-  useCallback(() => {
-    let isActive = true;
-
-    const refreshOnFocus = async () => {
-      console.log('[Focus] ComplaintListTab focused');
-
-      setLoading(true);
-      try {
-        const result = await getComplaintReport(startDate, endDate);
-        if (isActive) {
-          setReports(result || []);
-        }
-      } catch (error) {
-        console.error('Error refreshing on focus:', error);
-      } finally {
-        if (isActive) setLoading(false);
-      }
+  useEffect(() => {
+    const refreshFromNotification = async () => {
+      setRefreshing(true);
+      const result = await getComplaintReport(startDate, endDate);
+      setReports(result || []);
+      setRefreshing(false);
     };
 
-    refreshOnFocus();
+    NotificationEvents.on('getPendingRecharge', refreshFromNotification);
 
     return () => {
-      isActive = false;
+      NotificationEvents.off('getPendingRecharge', refreshFromNotification);
     };
-  }, [startDate, endDate])
-);
+  }, [startDate, endDate]);
 
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      const refreshOnFocus = async () => {
+        setLoading(true);
+        try {
+          const result = await getComplaintReport(startDate, endDate);
+          if (isActive) {
+            setReports(result || []);
+          }
+        } catch (error) {
+          console.error('Error refreshing on focus:', error);
+        } finally {
+          if (isActive) setLoading(false);
+        }
+      };
+
+      refreshOnFocus();
+
+      return () => {
+        isActive = false;
+      };
+    }, [startDate, endDate]),
+  );
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -87,7 +82,6 @@ useFocusEffect(
     };
     loadInitialData();
   }, []);
-  
 
   const handleFilter = async () => {
     setLoading(true);
@@ -112,7 +106,7 @@ useFocusEffect(
     setRefreshing(false);
   };
 
-  const renderHistoryItem = ({ item }) => {
+  const renderHistoryItem = ({item}) => {
     const mappedItem = {
       EDT: item.EDT,
       MNO: item.DET,
@@ -125,8 +119,8 @@ useFocusEffect(
 
   const renderHistoryLoading = () => {
     return (
-      <View style={{ paddingVertical: 8, paddingHorizontal: 0 }}>
-        {Array.from({ length: 15 }).map((_, idx) => (
+      <View style={{paddingVertical: 8, paddingHorizontal: 0}}>
+        {Array.from({length: 15}).map((_, idx) => (
           <HistoryCard key={idx} loading theme={theme} />
         ))}
       </View>
@@ -134,96 +128,85 @@ useFocusEffect(
   };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: theme.colors.background }}>
+    <View className="flex-1" style={{backgroundColor: theme.colors.background}}>
       <View className="flex-1 p-4">
-     
-
         <View
-  style={{
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-    gap: 6,
-    flexWrap: 'nowrap',
-  }}
->
-  <TouchableOpacity
-    onPress={() => {
-      setCurrentPicker('start');
-      setPickerVisible(true);
-    }}
-    style={{
-      flex: 1,
-      paddingVertical: 8,
-      borderRadius: 8,
-      alignItems: 'center',
-      backgroundColor: theme.colors.primaryLight,
-    }}
-  >
-    <Text
-      numberOfLines={1}
-      style={{
-        color: theme.colors.text,
-        fontFamily: theme.typography.fontFamily.medium,
-        fontSize: theme.typography.fontSize.s,
-      }}
-    >
-      {dayjs(startDate).format('DD-MM-YYYY')}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 12,
+            gap: 6,
+            flexWrap: 'nowrap',
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              setCurrentPicker('start');
+              setPickerVisible(true);
+            }}
+            style={{
+              flex: 1,
+              paddingVertical: 8,
+              borderRadius: 8,
+              alignItems: 'center',
+              backgroundColor: theme.colors.primaryLight,
+            }}>
+            <Text
+              numberOfLines={1}
+              style={{
+                color: theme.colors.text,
+                fontFamily: theme.typography.fontFamily.medium,
+                fontSize: theme.typography.fontSize.s,
+              }}>
+              {dayjs(startDate).format('DD-MM-YYYY')}
+            </Text>
+          </TouchableOpacity>
 
-    </Text>
-  </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setCurrentPicker('end');
+              setPickerVisible(true);
+            }}
+            style={{
+              flex: 1,
+              paddingVertical: 8,
+              borderRadius: 8,
+              alignItems: 'center',
+              backgroundColor: theme.colors.primaryLight,
+            }}>
+            <Text
+              numberOfLines={1}
+              style={{
+                color: theme.colors.text,
+                fontFamily: theme.typography.fontFamily.medium,
+                fontSize: theme.typography.fontSize.s,
+              }}>
+              {dayjs(endDate).format('DD-MM-YYYY')}
+            </Text>
+          </TouchableOpacity>
 
-  <TouchableOpacity
-    onPress={() => {
-      setCurrentPicker('end');
-      setPickerVisible(true);
-    }}
-    style={{
-      flex: 1,
-      paddingVertical: 8,
-      borderRadius: 8,
-      alignItems: 'center',
-      backgroundColor: theme.colors.primaryLight,
-    }}
-  >
-    <Text
-      numberOfLines={1}
-      style={{
-        color: theme.colors.text,
-        fontFamily: theme.typography.fontFamily.medium,
-        fontSize: theme.typography.fontSize.s,
-      }}
-    >
-      {dayjs(endDate).format('DD-MM-YYYY')}
+          <View style={{flexShrink: 1}}>
+            <Button
+              title="Apply"
+              onPress={handleFilter}
+              theme={theme}
+              size="small"
+            />
+          </View>
 
-    </Text>
-  </TouchableOpacity>
-
-  <View style={{ flexShrink: 1 }}>
-    <Button
-      title="Apply"
-      onPress={handleFilter}
-      theme={theme}
-      size="small"
-    />
-  </View>
-
-  <TouchableOpacity
-    onPress={handleReset}
-    style={{
-      width: 36,
-      height: 36,
-      backgroundColor: theme.colors.primary,
-      borderRadius: 8,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
-    }}
-  >
-    <Icons icon="ResetIcon" size={18} color={theme.colors.primary} />
-  </TouchableOpacity>
-</View>
-
+          <TouchableOpacity
+            onPress={handleReset}
+            style={{
+              width: 36,
+              height: 36,
+              backgroundColor: theme.colors.primary,
+              borderRadius: 8,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+            <Icons icon="ResetIcon" size={18} color={theme.colors.primary} />
+          </TouchableOpacity>
+        </View>
 
         {pickerVisible && (
           <InlineDateRangePicker
@@ -245,7 +228,7 @@ useFocusEffect(
             data={reports}
             keyExtractor={(item, index) => index.toString()}
             renderItem={renderHistoryItem}
-            contentContainerStyle={{ paddingBottom: 80 }}
+            contentContainerStyle={{paddingBottom: 80}}
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl
@@ -261,11 +244,10 @@ useFocusEffect(
                   textAlign: 'center',
                   marginTop: 20,
                   color: theme.colors.textSecondary,
-                   fontFamily: theme.typography.fontFamily.regular,
-                   fontSize:theme.typography.fontSize.m
-                }}
-              >
-             No records found
+                  fontFamily: theme.typography.fontFamily.regular,
+                  fontSize: theme.typography.fontSize.m,
+                }}>
+                No records found
               </Text>
             }
           />
