@@ -19,7 +19,7 @@ const ReportTable = ({
   formatRowData = () => [],
   theme,
 }) => {
-  const getCellWidth = (header) => {
+  const getCellWidth = header => {
     if (header === 'Farmer' || header === 'Flower') return 180;
     if (header === 'S.No') return 60;
     return 100;
@@ -27,7 +27,7 @@ const ReportTable = ({
 
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      <View style={[styles.table, { backgroundColor: theme.colors.surface }]}>
+      <View style={[styles.table, {backgroundColor: theme.colors.surface}]}>
         <View
           style={[
             styles.tableHeader,
@@ -35,8 +35,7 @@ const ReportTable = ({
               backgroundColor: theme.colors.primary,
               borderBottomColor: theme.colors.border,
             },
-          ]}
-        >
+          ]}>
           {headers.map((header, index) => (
             <Text
               key={index}
@@ -46,20 +45,16 @@ const ReportTable = ({
                   width: getCellWidth(header),
                 },
               ]}
-              allowFontScaling={false}
-            >
+              allowFontScaling={false}>
               <Text
                 style={[
-                  header === 'S.No'
-                    ? styles.snoHeaderText
-                    : styles.headerText,
+                  header === 'S.No' ? styles.snoHeaderText : styles.headerText,
                   {
                     color: theme.colors.card,
                     fontFamily: theme.typography.fontFamily.bold,
-                    fontSize:theme.typography.fontSize.xs
+                    fontSize: theme.typography.fontSize.xs,
                   },
-                ]}
-              >
+                ]}>
                 {header}
               </Text>
             </Text>
@@ -69,7 +64,7 @@ const ReportTable = ({
         <FlatList
           data={data}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item, index }) => {
+          renderItem={({item, index}) => {
             const rowValues = formatRowData(item, index);
             return (
               <View
@@ -77,10 +72,9 @@ const ReportTable = ({
                   styles.tableRow,
                   {
                     borderBottomColor: theme.colors.border,
-                    backgroundColor:theme.colors.primaryLight + "30"
+                    backgroundColor: theme.colors.primaryLight + '30',
                   },
-                ]}
-              >
+                ]}>
                 {rowValues.map((value, idx) => (
                   <Text
                     key={idx}
@@ -90,8 +84,7 @@ const ReportTable = ({
                         width: getCellWidth(headers[idx]),
                       },
                     ]}
-                    allowFontScaling={false}
-                  >
+                    allowFontScaling={false}>
                     <Text
                       style={[
                         headers[idx] === 'S.No'
@@ -100,10 +93,9 @@ const ReportTable = ({
                         {
                           color: theme.colors.text,
                           fontFamily: theme.typography.fontFamily.light,
-                          fontSize:theme.typography.fontSize.s
+                          fontSize: theme.typography.fontSize.s,
                         },
-                      ]}
-                    >
+                      ]}>
                       {value || '-'}
                     </Text>
                   </Text>
@@ -145,7 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 4,
-    paddingVertical:8,
+    paddingVertical: 8,
     flexWrap: 'wrap',
   },
   headerText: {

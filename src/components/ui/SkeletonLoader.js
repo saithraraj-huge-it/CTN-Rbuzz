@@ -1,14 +1,14 @@
-"use client"
+'use client';
 
-import { useEffect, useRef } from "react"
-import { View, StyleSheet, Animated, Easing, Dimensions } from "react-native"
-import { useTheme } from "../../contexts/ThemeContext"
+import {useEffect, useRef} from 'react';
+import {View, StyleSheet, Animated, Easing, Dimensions} from 'react-native';
+import {useTheme} from '../../contexts/ThemeContext';
 
-const { width } = Dimensions.get("window")
+const {width} = Dimensions.get('window');
 
-export const SkeletonLoader = ({ type = "list", count = 3 }) => {
-  const { theme } = useTheme()
-  const fadeAnim = useRef(new Animated.Value(0.3)).current
+export const SkeletonLoader = ({type = 'list', count = 3}) => {
+  const {theme} = useTheme();
+  const fadeAnim = useRef(new Animated.Value(0.3)).current;
 
   useEffect(() => {
     Animated.loop(
@@ -26,11 +26,11 @@ export const SkeletonLoader = ({ type = "list", count = 3 }) => {
           useNativeDriver: true,
         }),
       ]),
-    ).start()
-  }, [fadeAnim])
+    ).start();
+  }, [fadeAnim]);
 
   const renderListSkeleton = () => {
-    return Array.from({ length: count }).map((_, index) => (
+    return Array.from({length: count}).map((_, index) => (
       <Animated.View
         key={`skeleton-${index}`}
         style={[
@@ -39,30 +39,44 @@ export const SkeletonLoader = ({ type = "list", count = 3 }) => {
             backgroundColor: theme.colors.backgroundSecondary,
             opacity: fadeAnim,
           },
-        ]}
-      >
-        <View style={[styles.listImage, { backgroundColor: theme.colors.skeletonHighlight }]} />
+        ]}>
+        <View
+          style={[
+            styles.listImage,
+            {backgroundColor: theme.colors.skeletonHighlight},
+          ]}
+        />
         <View style={styles.listContent}>
-          <View style={[styles.listTitle, { backgroundColor: theme.colors.skeletonHighlight }]} />
-          <View style={[styles.listDescription, { backgroundColor: theme.colors.skeletonHighlight }]} />
+          <View
+            style={[
+              styles.listTitle,
+              {backgroundColor: theme.colors.skeletonHighlight},
+            ]}
+          />
+          <View
+            style={[
+              styles.listDescription,
+              {backgroundColor: theme.colors.skeletonHighlight},
+            ]}
+          />
           <View
             style={[
               styles.listDescription,
               {
-                width: "60%",
+                width: '60%',
                 backgroundColor: theme.colors.skeletonHighlight,
               },
             ]}
           />
         </View>
       </Animated.View>
-    ))
-  }
+    ));
+  };
 
   const renderGridSkeleton = () => {
     return (
       <View style={styles.gridContainer}>
-        {Array.from({ length: count }).map((_, index) => (
+        {Array.from({length: count}).map((_, index) => (
           <Animated.View
             key={`skeleton-${index}`}
             style={[
@@ -71,20 +85,29 @@ export const SkeletonLoader = ({ type = "list", count = 3 }) => {
                 backgroundColor: theme.colors.backgroundSecondary,
                 opacity: fadeAnim,
               },
-            ]}
-          >
-            <View style={[styles.gridImage, { backgroundColor: theme.colors.skeletonHighlight }]} />
+            ]}>
+            <View
+              style={[
+                styles.gridImage,
+                {backgroundColor: theme.colors.skeletonHighlight},
+              ]}
+            />
             <View style={styles.gridContent}>
-              <View style={[styles.gridTitle, { backgroundColor: theme.colors.skeletonHighlight }]} />
+              <View
+                style={[
+                  styles.gridTitle,
+                  {backgroundColor: theme.colors.skeletonHighlight},
+                ]}
+              />
             </View>
           </Animated.View>
         ))}
       </View>
-    )
-  }
+    );
+  };
 
   const renderNotificationSkeleton = () => {
-    return Array.from({ length: count }).map((_, index) => (
+    return Array.from({length: count}).map((_, index) => (
       <Animated.View
         key={`skeleton-${index}`}
         style={[
@@ -93,27 +116,43 @@ export const SkeletonLoader = ({ type = "list", count = 3 }) => {
             backgroundColor: theme.colors.backgroundSecondary,
             opacity: fadeAnim,
           },
-        ]}
-      >
-        <View style={[styles.notificationIcon, { backgroundColor: theme.colors.skeletonHighlight }]} />
+        ]}>
+        <View
+          style={[
+            styles.notificationIcon,
+            {backgroundColor: theme.colors.skeletonHighlight},
+          ]}
+        />
         <View style={styles.notificationContent}>
-          <View style={[styles.notificationText, { backgroundColor: theme.colors.skeletonHighlight }]} />
-          <View style={[styles.notificationTime, { backgroundColor: theme.colors.skeletonHighlight }]} />
+          <View
+            style={[
+              styles.notificationText,
+              {backgroundColor: theme.colors.skeletonHighlight},
+            ]}
+          />
+          <View
+            style={[
+              styles.notificationTime,
+              {backgroundColor: theme.colors.skeletonHighlight},
+            ]}
+          />
         </View>
       </Animated.View>
-    ))
-  }
+    ));
+  };
 
   switch (type) {
-    case "grid":
-      return <View style={styles.container}>{renderGridSkeleton()}</View>
-    case "notification":
-      return <View style={styles.container}>{renderNotificationSkeleton()}</View>
-    case "list":
+    case 'grid':
+      return <View style={styles.container}>{renderGridSkeleton()}</View>;
+    case 'notification':
+      return (
+        <View style={styles.container}>{renderNotificationSkeleton()}</View>
+      );
+    case 'list':
     default:
-      return <View style={styles.container}>{renderListSkeleton()}</View>
+      return <View style={styles.container}>{renderListSkeleton()}</View>;
   }
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -121,10 +160,10 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   listItem: {
-    flexDirection: "row",
+    flexDirection: 'row',
     borderRadius: 12,
     marginBottom: 15,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   listImage: {
     width: 100,
@@ -136,29 +175,29 @@ const styles = StyleSheet.create({
   },
   listTitle: {
     height: 20,
-    width: "70%",
+    width: '70%',
     borderRadius: 4,
     marginBottom: 12,
   },
   listDescription: {
     height: 14,
-    width: "100%",
+    width: '100%',
     borderRadius: 4,
     marginBottom: 8,
   },
   gridContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   gridItem: {
     width: width / 3 - 20,
     borderRadius: 12,
-    overflow: "hidden",
+    overflow: 'hidden',
     marginBottom: 15,
   },
   gridImage: {
-    width: "100%",
+    width: '100%',
     height: 120,
   },
   gridContent: {
@@ -166,15 +205,15 @@ const styles = StyleSheet.create({
   },
   gridTitle: {
     height: 16,
-    width: "100%",
+    width: '100%',
     borderRadius: 4,
   },
   notificationItem: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: '#f0f0f0',
   },
   notificationIcon: {
     width: 40,
@@ -187,13 +226,13 @@ const styles = StyleSheet.create({
   },
   notificationText: {
     height: 16,
-    width: "90%",
+    width: '90%',
     borderRadius: 4,
     marginBottom: 8,
   },
   notificationTime: {
     height: 12,
-    width: "40%",
+    width: '40%',
     borderRadius: 4,
   },
-})
+});

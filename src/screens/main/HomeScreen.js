@@ -12,7 +12,7 @@ import {useTheme} from '../../contexts/ThemeContext';
 import Icon from '../../theme/IconsProvider';
 import Skeleton from '../../components/ui/Skeleton';
 import {useAuth} from '../../contexts/AuthContext';
-import { useData } from '../../contexts/DataProvider'
+import {useData} from '../../contexts/DataProvider';
 
 const services = [
   {key: 'PrepaidMobile', label: 'Prepaid Mobile ', icon: 'PrepaidIcon'},
@@ -23,14 +23,13 @@ const services = [
   {key: 'ChannelScreen', label: 'Channels', icon: 'channelIcon'},
   {key: 'CableTvScreen', label: 'Cable TV', icon: 'televisionIcon'},
   {key: 'AddOnService', label: 'Other Add-On Services', icon: 'ServiceIcon'},
-  {key: 'WalletPurchase'},
 ];
 
 const HomeScreen = ({navigation}) => {
   const {theme} = useTheme();
   const [loading, setLoading] = useState(true);
   const {user} = useAuth();
-  const { getAccountInfo } = useData()
+  const {getAccountInfo} = useData();
 
   const screenWidth = Dimensions.get('window').width;
   const padding = 16;
@@ -54,31 +53,30 @@ const HomeScreen = ({navigation}) => {
     return rows;
   };
 
-  const [accountBalance, setAccountBalance] = useState(0)
+  const [accountBalance, setAccountBalance] = useState(0);
 
   useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const list = await getAccountInfo()
-          if (Array.isArray(list) && list.length > 0) {
-            const { OBA, SAL, ABA, EAR, PUR } = list[0]
-            setAccountBalance(Number(ABA).toFixed(2))
-          }
-        } catch (error) {
-          console.error('Error fetching account info:', error)
-        } finally {
-          setLoading(false)
+    const fetchData = async () => {
+      try {
+        const list = await getAccountInfo();
+        if (Array.isArray(list) && list.length > 0) {
+          const {OBA, SAL, ABA, EAR, PUR} = list[0];
+          setAccountBalance(Number(ABA).toFixed(2));
         }
+      } catch (error) {
+        console.error('Error fetching account info:', error);
+      } finally {
+        setLoading(false);
       }
-  
-      fetchData()
-    }, [])
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <ScrollView
       className="flex-1 px-4 pt-2"
       style={{backgroundColor: theme.colors.background}}>
-        
       {loading ? (
         <>
           <View className="flex-row items-center justify-between w-full mb-4">
@@ -223,12 +221,6 @@ const HomeScreen = ({navigation}) => {
                 {row.map((service, colIndex) => (
                   <TouchableOpacity
                     key={`${rowIndex}-${colIndex}`}
-                    // onPress={() => navigation.navigate(service.key)}
-                    // onPress={() => {
-                    //   if (service.key !== 'WalletPurchase') {
-                    //     navigation.navigate(service.key);
-                    //   }
-                    // }}
                     onPress={() => {
                       if (service.key === 'WalletPurchase') return;
 
@@ -295,12 +287,15 @@ const HomeScreen = ({navigation}) => {
           </Text>
 
           <TouchableOpacity
-            // onPress={() => Linking.openURL('https://www.ctnrbuzz.com/')}
             onPress={() => {
-    if (user?.url) {
-      Linking.openURL(user.url.startsWith('http') ? user.url : `https://${user.url}`);
-    }
-  }}
+              if (user?.url) {
+                Linking.openURL(
+                  user.url.startsWith('http')
+                    ? user.url
+                    : `https://${user.url}`,
+                );
+              }
+            }}
             className="p-4 rounded-xl shadow-sm"
             style={{
               backgroundColor: theme.colors.card,

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Platform } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, Platform} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from '../../theme/IconsProvider';
-import { useTheme } from '../../contexts/ThemeContext';
+import {useTheme} from '../../contexts/ThemeContext';
 
-export default function DatePickerInput({ label, value, onChange, error }) {
+export default function DatePickerInput({label, value, onChange, error}) {
   const [showPicker, setShowPicker] = useState(false);
-  const { theme } = useTheme();
+  const {theme} = useTheme();
 
   const showDatepicker = () => setShowPicker(true);
 
@@ -28,8 +28,7 @@ export default function DatePickerInput({ label, value, onChange, error }) {
             color: theme.colors.textPrimary,
             marginBottom: 4,
           }}
-          allowFontScaling={false}
-        >
+          allowFontScaling={false}>
           {label}
         </Text>
       )}
@@ -40,26 +39,29 @@ export default function DatePickerInput({ label, value, onChange, error }) {
         style={{
           borderColor: error ? theme.colors.error : theme.colors.textSecondary,
           backgroundColor: theme.colors.background,
-        }}
-      >
-        <Text 
+        }}>
+        <Text
           className="flex-1 text-base font-montserrat"
           style={{
-            color: formattedDate ? theme.colors.textPrimary : theme.colors.textPrimary,
+            color: formattedDate
+              ? theme.colors.textPrimary
+              : theme.colors.textPrimary,
           }}
-          allowFontScaling={false}
-        >
+          allowFontScaling={false}>
           {formattedDate || 'Select Date'}
         </Text>
-         <Icon icon={theme ? 'DarkDateIcon' : 'DateIcon'} size={20} color={theme.colors.gray} />
+        <Icon
+          icon={theme ? 'DarkDateIcon' : 'DateIcon'}
+          size={20}
+          color={theme.colors.gray}
+        />
       </TouchableOpacity>
 
       {!!error && (
         <Text
           className="text-sm font-semibold mt-1 ml-1 font-montserrat"
-          style={{ color: theme.colors.error }}
-          allowFontScaling={false}
-        >
+          style={{color: theme.colors.error}}
+          allowFontScaling={false}>
           {error}
         </Text>
       )}

@@ -1,5 +1,5 @@
 export let serverStatusRef = null;
 
-export const setServerStatusRef = (ref) => {
+export const setServerStatusRef = ref => {
   serverStatusRef = ref;
 };

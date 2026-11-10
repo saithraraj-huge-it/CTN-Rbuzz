@@ -18,7 +18,7 @@ export const Button = ({
   style,
   textStyle,
   theme,
-  fullWidth = false, 
+  fullWidth = false,
 }) => {
   const getButtonStyle = () => {
     const baseStyle = [
@@ -26,7 +26,7 @@ export const Button = ({
       styles[`button${size.charAt(0).toUpperCase() + size.slice(1)}`],
     ];
 
-    if (fullWidth) baseStyle.push({ width: '100%' });
+    if (fullWidth) baseStyle.push({width: '100%'});
 
     if (disabled) {
       return [
@@ -78,22 +78,19 @@ export const Button = ({
   };
 
   const getTextStyle = () => {
-
     if (disabled) {
       return [
         {
           color: theme.colors.disabledText,
           fontFamily: theme.typography.fontFamily.medium,
-          fontSize:theme.typography.fontSize.s
+          fontSize: theme.typography.fontSize.s,
         },
         textStyle,
       ];
     }
 
     const color =
-      variant === 'filled'
-        ? theme.colors.buttonText
-        : theme.colors.primary;
+      variant === 'filled' ? theme.colors.buttonText : theme.colors.primary;
 
     return [
       {
@@ -109,8 +106,7 @@ export const Button = ({
       style={getButtonStyle()}
       onPress={onPress}
       disabled={disabled || isLoading}
-      activeOpacity={0.7}
-    >
+      activeOpacity={0.7}>
       {isLoading ? (
         <ActivityIndicator
           color={

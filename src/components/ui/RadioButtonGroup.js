@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import {View} from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
 
 const RadioButtonGroup = ({
@@ -16,14 +16,11 @@ const RadioButtonGroup = ({
     labelStyle: {
       fontFamily: theme.typography.fontFamily.regular,
       fontSize: theme.typography.fontSize.m,
-      color: selected === option.value 
-        ? theme.colors.primary 
-        : theme.colors.text,
+      color:
+        selected === option.value ? theme.colors.primary : theme.colors.text,
     },
-     size: 18,
-     color: selected === option.value
-    ? theme.colors.primary
-    : theme.colors.text,
+    size: 18,
+    color: selected === option.value ? theme.colors.primary : theme.colors.text,
     containerStyle: {
       alignItems: 'center',
       marginRight: 8,
@@ -31,17 +28,18 @@ const RadioButtonGroup = ({
   }));
 
   return (
-    <View style={{ 
-      flexDirection: direction, 
-      flexWrap: 'wrap',
-      marginBottom: 16,
-    }}>
+    <View
+      style={{
+        flexDirection: direction,
+        flexWrap: 'wrap',
+        marginBottom: 16,
+      }}>
       <RadioGroup
         radioButtons={radioButtons}
         selectedId={selected?.toString()}
-        onPress={(id) => {
-          const selectedOption = options.find(opt => 
-            opt.value.toString() === id
+        onPress={id => {
+          const selectedOption = options.find(
+            opt => opt.value.toString() === id,
           );
           if (selectedOption) onSelect(selectedOption.value);
         }}
@@ -49,7 +47,6 @@ const RadioButtonGroup = ({
         containerStyle={{
           flexDirection: direction,
         }}
-      
       />
     </View>
   );

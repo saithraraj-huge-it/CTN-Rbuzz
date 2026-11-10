@@ -1,8 +1,8 @@
 import React from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import icons from '../theme/icons';
 
-const Icon = ({ onPress, icon, viewStyle, style, size }) => {
+const Icon = ({onPress, icon, viewStyle, style, size}) => {
   const SvgIcon = icons[icon];
 
   if (!SvgIcon) {
@@ -12,16 +12,12 @@ const Icon = ({ onPress, icon, viewStyle, style, size }) => {
 
   const content = (
     <View style={viewStyle}>
-      <SvgIcon width={size}  height={size} style={style} />
+      <SvgIcon width={size} height={size} style={style} />
     </View>
   );
 
   if (onPress) {
-    return (
-      <TouchableOpacity onPress={onPress}>
-        {content}
-      </TouchableOpacity>
-    );
+    return <TouchableOpacity onPress={onPress}>{content}</TouchableOpacity>;
   }
 
   return content;

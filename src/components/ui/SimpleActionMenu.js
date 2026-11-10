@@ -1,27 +1,21 @@
-import React, { useState, useRef } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Modal
-} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Modal} from 'react-native';
 
-const SimpleActionMenu = ({ 
-  menuItems = [], 
+const SimpleActionMenu = ({
+  menuItems = [],
   renderTrigger,
-  menuPosition = 'right'
+  menuPosition = 'right',
 }) => {
   const [visible, setVisible] = useState(false);
   const triggerRef = useRef(null);
-  const [menuLayout, setMenuLayout] = useState({ x: 0, y: 0 });
+  const [menuLayout, setMenuLayout] = useState({x: 0, y: 0});
 
   const showMenu = () => {
     if (triggerRef.current) {
       triggerRef.current.measure((x, y, width, height, pageX, pageY) => {
         setMenuLayout({
           x: menuPosition === 'right' ? pageX - 100 + width : pageX,
-          y: pageY + height
+          y: pageY + height,
         });
         setVisible(true);
       });
@@ -32,7 +26,7 @@ const SimpleActionMenu = ({
     setVisible(false);
   };
 
-  const handleMenuItemPress = (item) => {
+  const handleMenuItemPress = item => {
     hideMenu();
     if (item.onPress) {
       item.onPress();
@@ -41,11 +35,10 @@ const SimpleActionMenu = ({
 
   return (
     <View>
-      <TouchableOpacity 
-        ref={triggerRef} 
-        onPress={showMenu}
-      >
-        {renderTrigger ? renderTrigger() : (
+      <TouchableOpacity ref={triggerRef} onPress={showMenu}>
+        {renderTrigger ? (
+          renderTrigger()
+        ) : (
           <Text style={styles.defaultTrigger}>•••</Text>
         )}
       </TouchableOpacity>
@@ -54,31 +47,27 @@ const SimpleActionMenu = ({
         transparent
         visible={visible}
         animationType="fade"
-        onRequestClose={hideMenu}
-      >
-        <TouchableOpacity 
-          style={styles.overlay} 
-          activeOpacity={1} 
-          onPress={hideMenu}
-        >
-          <View 
+        onRequestClose={hideMenu}>
+        <TouchableOpacity
+          style={styles.overlay}
+          activeOpacity={1}
+          onPress={hideMenu}>
+          <View
             style={[
-              styles.menuContainer, 
-              { 
-                top: menuLayout.y, 
-                left: menuLayout.x 
-              }
-            ]}
-          >
+              styles.menuContainer,
+              {
+                top: menuLayout.y,
+                left: menuLayout.x,
+              },
+            ]}>
             {menuItems.map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={[
                   styles.menuItem,
-                  index === menuItems.length - 1 && styles.lastMenuItem
+                  index === menuItems.length - 1 && styles.lastMenuItem,
                 ]}
-                onPress={() => handleMenuItemPress(item)}
-              >
+                onPress={() => handleMenuItemPress(item)}>
                 <Text style={styles.menuItemText}>{item.label}</Text>
               </TouchableOpacity>
             ))}
@@ -105,7 +94,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: 120,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
@@ -121,7 +110,7 @@ const styles = StyleSheet.create({
   },
   menuItemText: {
     fontSize: 14,
-  }
+  },
 });
 
 export default SimpleActionMenu;

@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import {EventEmitter} from 'events';
 
 const NotificationEvents = new EventEmitter();
 export default NotificationEvents;

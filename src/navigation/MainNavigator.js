@@ -1,14 +1,14 @@
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
-import { useTheme } from '../contexts/ThemeContext';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
+import {useTheme} from '../contexts/ThemeContext';
 import Icon from '../theme/IconsProvider';
 import HomeScreen from '../screens/main/HomeScreen';
 import SettingsScreen from '../screens/main/SettingsScreen';
 import NotificationsScreen from '../screens/main/NotificationsScreen';
 import ReportScreen from '../screens/main/ReportScreen';
-import { Dimensions, Platform } from 'react-native';
+import {Dimensions, Platform} from 'react-native';
 
 const RootStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -17,28 +17,28 @@ const ReportStack = createStackNavigator();
 const SettingsStack = createStackNavigator();
 const NotificationsStack = createStackNavigator();
 
-const { height } = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 const HomeStackNavigator = () => (
-  <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+  <HomeStack.Navigator screenOptions={{headerShown: false}}>
     <HomeStack.Screen name="HomeMain" component={HomeScreen} />
   </HomeStack.Navigator>
 );
 
 const ReportStackNavigator = () => (
-  <ReportStack.Navigator screenOptions={{ headerShown: false }}>
+  <ReportStack.Navigator screenOptions={{headerShown: false}}>
     <ReportStack.Screen name="ReportMain" component={ReportScreen} />
   </ReportStack.Navigator>
 );
 
 const SettingsStackNavigator = () => (
-  <SettingsStack.Navigator screenOptions={{ headerShown: false }}>
+  <SettingsStack.Navigator screenOptions={{headerShown: false}}>
     <SettingsStack.Screen name="SettingsMain" component={SettingsScreen} />
   </SettingsStack.Navigator>
 );
 
 const NotificationsStackNavigator = () => (
-  <NotificationsStack.Navigator screenOptions={{ headerShown: false }}>
+  <NotificationsStack.Navigator screenOptions={{headerShown: false}}>
     <NotificationsStack.Screen
       name="NotificationsMain"
       component={NotificationsScreen}
@@ -47,11 +47,11 @@ const NotificationsStackNavigator = () => (
 );
 
 const TabNavigator = () => {
-  const { theme } = useTheme();
+  const {theme} = useTheme();
 
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={({route}) => ({
         headerShown: false,
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.text,
@@ -66,7 +66,7 @@ const TabNavigator = () => {
           height: height * 0.075,
           paddingBottom: Platform.OS === 'ios' ? height * 0.015 : height * 0.01,
         },
-        tabBarIcon: ({ color, size, focused }) => {
+        tabBarIcon: ({color, size, focused}) => {
           let iconName;
 
           switch (route.name) {
@@ -101,9 +101,8 @@ const TabNavigator = () => {
 };
 
 const MainNavigator = () => (
-  <RootStack.Navigator screenOptions={{ headerShown: false }}>
+  <RootStack.Navigator screenOptions={{headerShown: false}}>
     <RootStack.Screen name="Tabs" component={TabNavigator} />
-
   </RootStack.Navigator>
 );
 

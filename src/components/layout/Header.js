@@ -1,8 +1,8 @@
-"use client"
-import { View, Text, TouchableOpacity, StatusBar } from "react-native"
-import { useTheme } from "../../contexts/ThemeContext"
-import Icon from "../../theme/IconsProvider"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
+'use client';
+import {View, Text, TouchableOpacity, StatusBar} from 'react-native';
+import {useTheme} from '../../contexts/ThemeContext';
+import Icon from '../../theme/IconsProvider';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export const Header = ({
   title,
@@ -12,34 +12,39 @@ export const Header = ({
   onBackPress,
   rightComponent,
   alignTitleCenter = true,
-  notificationsLength = 0, 
+  notificationsLength = 0,
   isRefreshing = false,
 }) => {
-  const { theme } = useTheme()
-  const insets = useSafeAreaInsets()
-  
-const renderRightComponent = () => {
+  const {theme} = useTheme();
+  const insets = useSafeAreaInsets();
+
+  const renderRightComponent = () => {
     if (rightComponent) return rightComponent;
-    
+
     if (showNotification) {
       return (
         <TouchableOpacity className="p-1">
-          <Icon name="notifications-outline" size={24} color={theme.colors.text} />
+          <Icon
+            name="notifications-outline"
+            size={24}
+            color={theme.colors.text}
+          />
         </TouchableOpacity>
       );
     }
-    
+
     return null;
   };
   return (
     <View
-      className={`pt-[${insets.top}px] ${
-        showBack ? '' : 'border-b'
-      }` }
-      style={{ backgroundColor: theme.colors.background ,zIndex: 100,borderColor:theme.colors.border}}
-    >
+      className={`pt-[${insets.top}px] ${showBack ? '' : 'border-b'}`}
+      style={{
+        backgroundColor: theme.colors.background,
+        zIndex: 100,
+        borderColor: theme.colors.border,
+      }}>
       <StatusBar
-        barStyle={theme.dark ? "light-content" : "dark-content"}
+        barStyle={theme.dark ? 'light-content' : 'dark-content'}
         backgroundColor={theme.colors.background}
       />
 
@@ -49,9 +54,8 @@ const renderRightComponent = () => {
             <TouchableOpacity
               onPress={onBackPress}
               className="p-1"
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-            >
-              <Icon icon="LeftArrow" size={24}  />
+              hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}>
+              <Icon icon="LeftArrow" size={24} />
             </TouchableOpacity>
           )}
         </View>
@@ -59,19 +63,17 @@ const renderRightComponent = () => {
         <View
           className={`flex-1 justify-center ${
             alignTitleCenter ? 'items-center' : 'items-start'
-          }`}
-        >
+          }`}>
           <Text
             numberOfLines={1}
             className="text-xl"
             style={{
               color: theme.colors.primary,
               fontFamily: theme.typography.fontFamily.medium,
-              fontSize:theme.typography.fontSize.l,
-              textAlign: alignTitleCenter ? "center" : "left",
+              fontSize: theme.typography.fontSize.l,
+              textAlign: alignTitleCenter ? 'center' : 'left',
             }}
-            allowFontScaling={false}
-          >
+            allowFontScaling={false}>
             {title}
           </Text>
           {subtitle && (
@@ -80,24 +82,22 @@ const renderRightComponent = () => {
               className="text-xs"
               style={{
                 color: theme.colors.textSecondary,
-              fontFamily: theme.typography.fontFamily.medium,
-              fontSize:theme.typography.fontSize.m,
-                textAlign: alignTitleCenter ? "center" : "left",
+                fontFamily: theme.typography.fontFamily.medium,
+                fontSize: theme.typography.fontSize.m,
+                textAlign: alignTitleCenter ? 'center' : 'left',
               }}
-              allowFontScaling={false}
-            >
+              allowFontScaling={false}>
               {subtitle}
             </Text>
           )}
         </View>
 
-       
-      <View className="min-w-[60px] items-end justify-center">
+        <View className="min-w-[60px] items-end justify-center">
           {renderRightComponent()}
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

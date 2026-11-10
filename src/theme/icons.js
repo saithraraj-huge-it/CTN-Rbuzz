@@ -27,45 +27,45 @@ import DarkDateIcon from '../assets/DarkDateIcon.svg';
 import Home from '../assets/Home.svg';
 import settingsicon from '../assets/profile.svg';
 import ReportIcon from '../assets/chart.svg';
-import PostPaidIcon from '../assets/postpaid.svg'
-import ServiceIcon from '../assets/service.svg'
-import TrafficIcon from '../assets/trafic.svg'
+import PostPaidIcon from '../assets/postpaid.svg';
+import ServiceIcon from '../assets/service.svg';
+import TrafficIcon from '../assets/trafic.svg';
 import DthIcon from '../assets/DTHicon.svg';
 import PrepaidIcon from '../assets/prepaid.svg';
 import ElectricityIcon from '../assets/plugin.svg';
 import televisionIcon from '../assets/television.svg';
 import ewalletIcon from '../assets/ewallet.svg';
-import channelIcon from '../assets/channel.svg'
-import RefreshIcon from '../assets/refresh.svg'
-import UserIcon from '../assets/usericon.svg'
-import ComplaintIcon from '../assets/complaint.svg'
-import LogoutIcon from '../assets/logout.svg'
-import HelpLineIcon from '../assets/customercare.svg'
-import RingingIcon from '../assets/ringing.svg'
-import passwordIcon from '../assets/password.svg'
-import SettingsIcon from '../assets/settingsicon.svg'
-import RechargeReportIcon from '../assets/RechargeReport.svg'
-import PurchaseReportIcon from '../assets/Purchasereport.svg'
-import SalesReportIcon from '../assets/SalesReport.svg'
-import HomeFill from '../assets/homeFill.svg'
-import ChartFill from '../assets/chartFill.svg'
-import NotifyFill from '../assets/notificationFill.svg'
-import UserFill from '../assets/profileFill.svg'
-import SmsIcon from '../assets/sms.svg'
-import callIcon from '../assets/callIcon.svg'
-import SplashLogo from '../assets/SplashLogo.svg'
-import moneytransfer from '../assets/moneyTransfer.svg'
-import waterbill from '../assets/waterbill.svg'
-import gasbill from '../assets/gasbill.svg'
-import busTicket from '../assets/busTicket.svg'
-import CableTv from '../assets/CableTv.svg'
-import OttIcon from '../assets/OTT.svg'
-import apiIcon from '../assets/apiIcon.svg'
-import insurance from '../assets/insurance.svg'
-import BroadBand from '../assets/broadbill.svg'
-import ResetIcon from '../assets/refresh.svg'
-import DateEditIcon from '../assets/EditIconDate.svg'
-import CalendarIcon from '../assets/Calendar.svg'
+import channelIcon from '../assets/channel.svg';
+import RefreshIcon from '../assets/refresh.svg';
+import UserIcon from '../assets/usericon.svg';
+import ComplaintIcon from '../assets/complaint.svg';
+import LogoutIcon from '../assets/logout.svg';
+import HelpLineIcon from '../assets/customercare.svg';
+import RingingIcon from '../assets/ringing.svg';
+import passwordIcon from '../assets/password.svg';
+import SettingsIcon from '../assets/settingsicon.svg';
+import RechargeReportIcon from '../assets/RechargeReport.svg';
+import PurchaseReportIcon from '../assets/Purchasereport.svg';
+import SalesReportIcon from '../assets/SalesReport.svg';
+import HomeFill from '../assets/homeFill.svg';
+import ChartFill from '../assets/chartFill.svg';
+import NotifyFill from '../assets/notificationFill.svg';
+import UserFill from '../assets/profileFill.svg';
+import SmsIcon from '../assets/sms.svg';
+import callIcon from '../assets/callIcon.svg';
+import SplashLogo from '../assets/SplashLogo.svg';
+import moneytransfer from '../assets/moneyTransfer.svg';
+import waterbill from '../assets/waterbill.svg';
+import gasbill from '../assets/gasbill.svg';
+import busTicket from '../assets/busTicket.svg';
+import CableTv from '../assets/CableTv.svg';
+import OttIcon from '../assets/OTT.svg';
+import apiIcon from '../assets/apiIcon.svg';
+import insurance from '../assets/insurance.svg';
+import BroadBand from '../assets/broadbill.svg';
+import ResetIcon from '../assets/refresh.svg';
+import DateEditIcon from '../assets/EditIconDate.svg';
+import CalendarIcon from '../assets/Calendar.svg';
 
 export default {
   insurance,
@@ -135,5 +135,5 @@ export default {
   televisionIcon,
   ewalletIcon,
   RefreshIcon,
-  channelIcon
+  channelIcon,
 };

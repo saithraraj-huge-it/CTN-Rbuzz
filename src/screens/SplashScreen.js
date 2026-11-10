@@ -1,11 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import {
-  StyleSheet,
-  Animated,
-  ImageBackground,
-  Easing,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, {useEffect, useRef} from 'react';
+import {StyleSheet, Animated, ImageBackground, Easing} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import SplashScreenBg from '../assets/SplashScreen.png';
 import Icon from '../theme/IconsProvider';
 
@@ -61,24 +56,19 @@ const SplashScreen = () => {
   });
 
   return (
-    <Animated.View style={{ flex: 1, opacity: bgFadeAnim }}>
+    <Animated.View style={{flex: 1, opacity: bgFadeAnim}}>
       <ImageBackground
         source={SplashScreenBg}
         resizeMode="cover"
-        style={styles.container}
-      >
+        style={styles.container}>
         <Animated.View
           style={[
             styles.logoContainer,
             {
               opacity: fadeAnim,
-              transform: [
-                { scale: scaleAnim },
-                { rotate: rotateInterpolate },
-              ],
+              transform: [{scale: scaleAnim}, {rotate: rotateInterpolate}],
             },
-          ]}
-        >
+          ]}>
           <Icon icon="SplashLogo" size={150} />
         </Animated.View>
       </ImageBackground>

@@ -5,7 +5,6 @@ import {getGeoLocation} from '../utils/geoUtils';
 import DeviceInfo from 'react-native-device-info';
 import AuthEvents from '../utils/AuthEvents';
 
-
 const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
@@ -13,47 +12,42 @@ export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-  const handleLogout = () => {
-    setUser(null);
-  };
-
-  AuthEvents.on('logout', handleLogout);
-
-  return () => {
-    AuthEvents.off('logout', handleLogout);
-  };
-}, []);
-
-
-useEffect(() => {
-  const loadUser = async () => {
-    try {
-      const storedCookie = await AsyncStorage.getItem('auth_cookie');
-      
-      const storedMobile = await AsyncStorage.getItem('user_mobile');
-      const storedUserInfo = await AsyncStorage.getItem('user_info');
-      
-
-      if (storedCookie && storedMobile && storedUserInfo) {
-        const parsedUserInfo = JSON.parse(storedUserInfo);
-        // setUser({ mobileNo: storedMobile, ...parsedUserInfo });
-        setUser(parsedUserInfo);
-
-      } else {
-        setUser(null); 
-      }
-    } catch (e) {
-      console.error('Failed to load user:', e);
+    const handleLogout = () => {
       setUser(null);
-    } finally {
-      setAuthLoading(false);
-    }
-  };
+    };
 
-  loadUser();
-}, []);
+    AuthEvents.on('logout', handleLogout);
 
+    return () => {
+      AuthEvents.off('logout', handleLogout);
+    };
+  }, []);
 
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const storedCookie = await AsyncStorage.getItem('auth_cookie');
+
+        const storedMobile = await AsyncStorage.getItem('user_mobile');
+        const storedUserInfo = await AsyncStorage.getItem('user_info');
+
+        if (storedCookie && storedMobile && storedUserInfo) {
+          const parsedUserInfo = JSON.parse(storedUserInfo);
+          // setUser({ mobileNo: storedMobile, ...parsedUserInfo });
+          setUser(parsedUserInfo);
+        } else {
+          setUser(null);
+        }
+      } catch (e) {
+        console.error('Failed to load user:', e);
+        setUser(null);
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
+    loadUser();
+  }, []);
 
   const login = async (mobileNo, password, fcmToken) => {
     try {
@@ -62,8 +56,8 @@ useEffect(() => {
         ? `${location.latitude},${location.longitude}`
         : '0.000000,0.000000';
 
-       const deviceType = DeviceInfo.getDeviceType(); 
-       const deviceName = await DeviceInfo.getDeviceName();
+      const deviceType = DeviceInfo.getDeviceType();
+      const deviceName = await DeviceInfo.getDeviceName();
 
       const response = await axiosPost.post(
         '/api/atomService/session/checkAuth',
@@ -84,9 +78,9 @@ useEffect(() => {
           phNo: response.data?.mobileNo,
           url: response.data?.url,
           url1: response.data?.url1,
-          url2: response.data?.url2
+          url2: response.data?.url2,
         };
-        
+
         const setCookieHeader = response.headers['set-cookie'];
         let sessionCookie = null;
 

@@ -23,10 +23,7 @@ const ToastView = ({text1, type = 'success'}) => {
             backgroundColor: isError ? '#FEE2E2' : '#DCFCE7',
           },
         ]}>
-        <Icon
-          icon={isError ? 'LoginLogo' : 'LoginLogo'}
-          size={18}
-        />
+        <Icon icon={isError ? 'LoginLogo' : 'LoginLogo'} size={18} />
       </View>
 
       <Text
@@ -45,12 +42,8 @@ const ToastView = ({text1, type = 'success'}) => {
 };
 
 const toastConfig = {
-  success: ({text1}) => (
-    <ToastView text1={text1} type="success" />
-  ),
-  error: ({text1}) => (
-    <ToastView text1={text1} type="error" />
-  ),
+  success: ({text1}) => <ToastView text1={text1} type="success" />,
+  error: ({text1}) => <ToastView text1={text1} type="error" />,
 };
 
 const styles = StyleSheet.create({

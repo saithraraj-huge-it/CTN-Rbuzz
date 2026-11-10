@@ -1,5 +1,4 @@
-
-import React, { useState, useRef } from 'react';
+import React, {useState, useRef} from 'react';
 import {
   View,
   ScrollView,
@@ -11,15 +10,15 @@ import {
   PanResponder,
   Dimensions,
 } from 'react-native';
-import { useTheme } from '../../contexts/ThemeContext';
-import { Header } from '../../components/layout/Header';
+import {useTheme} from '../../contexts/ThemeContext';
+import {Header} from '../../components/layout/Header';
 
-const { height: screenHeight } = Dimensions.get('window');
+const {height: screenHeight} = Dimensions.get('window');
 const HALF_HEIGHT = screenHeight * 0.5;
 const EXPANDED_HEIGHT = 100;
 
-function PostPaidScreen({ navigation }) {
-  const { theme } = useTheme();
+function PostPaidScreen({navigation}) {
+  const {theme} = useTheme();
   const [search, setSearch] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -27,7 +26,7 @@ function PostPaidScreen({ navigation }) {
   const scrollOffset = useRef(0);
   let gestureStartY = HALF_HEIGHT;
 
-  const animateSheet = (toValue) => {
+  const animateSheet = toValue => {
     Animated.spring(bottomSheetTranslateY, {
       toValue,
       useNativeDriver: false,
@@ -45,7 +44,8 @@ function PostPaidScreen({ navigation }) {
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: (_, gestureState) => Math.abs(gestureState.dy) > 5,
+      onMoveShouldSetPanResponder: (_, gestureState) =>
+        Math.abs(gestureState.dy) > 5,
       onPanResponderGrant: () => {
         bottomSheetTranslateY.stopAnimation(value => {
           gestureStartY = value;
@@ -53,10 +53,12 @@ function PostPaidScreen({ navigation }) {
       },
       onPanResponderMove: (_, gestureState) => {
         const newY = gestureStartY + gestureState.dy;
-        bottomSheetTranslateY.setValue(Math.max(EXPANDED_HEIGHT, Math.min(HALF_HEIGHT, newY)));
+        bottomSheetTranslateY.setValue(
+          Math.max(EXPANDED_HEIGHT, Math.min(HALF_HEIGHT, newY)),
+        );
       },
       onPanResponderRelease: (_, gestureState) => {
-        const { dy, vy } = gestureState;
+        const {dy, vy} = gestureState;
         if (dy < -50 || vy < -0.3) {
           setIsExpanded(true);
           animateSheet(EXPANDED_HEIGHT);
@@ -65,7 +67,7 @@ function PostPaidScreen({ navigation }) {
           animateSheet(HALF_HEIGHT);
         }
       },
-    })
+    }),
   ).current;
 
   const topSectionTranslateY = bottomSheetTranslateY.interpolate({
@@ -81,16 +83,33 @@ function PostPaidScreen({ navigation }) {
   });
 
   const plans = [
-    { price: 129, validity: 28, desc: 'Get Truly Unlimited Local/National Calls to all Networks + 2GB + 300 SMS' },
-    { price: 199, validity: 28, desc: 'Unlimited Calls + 1.5GB/day + 100 SMS/day' },
-    { price: 249, validity: 28, desc: 'Unlimited Calls + 2GB/day + 100 SMS/day' },
-    { price: 299, validity: 28, desc: 'Unlimited Calls + 3GB/day + 100 SMS/day' },
-    { price: 399, validity: 56, desc: 'Unlimited Calls + 2.5GB/day + 100 SMS/day' },
-    { price: 499, validity: 56, desc: 'Unlimited Calls + 3GB/day + 100 SMS/day + Disney+ Hotstar' },
+    {
+      price: 129,
+      validity: 28,
+      desc: 'Get Truly Unlimited Local/National Calls to all Networks + 2GB + 300 SMS',
+    },
+    {
+      price: 199,
+      validity: 28,
+      desc: 'Unlimited Calls + 1.5GB/day + 100 SMS/day',
+    },
+    {price: 249, validity: 28, desc: 'Unlimited Calls + 2GB/day + 100 SMS/day'},
+    {price: 299, validity: 28, desc: 'Unlimited Calls + 3GB/day + 100 SMS/day'},
+    {
+      price: 399,
+      validity: 56,
+      desc: 'Unlimited Calls + 2.5GB/day + 100 SMS/day',
+    },
+    {
+      price: 499,
+      validity: 56,
+      desc: 'Unlimited Calls + 3GB/day + 100 SMS/day + Disney+ Hotstar',
+    },
   ];
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <Header
         title="Airtel Prepaid"
         showBack
@@ -102,26 +121,43 @@ function PostPaidScreen({ navigation }) {
         style={[
           styles.topSection,
           {
-            transform: [{ translateY: topSectionTranslateY }],
+            transform: [{translateY: topSectionTranslateY}],
             opacity: topSectionOpacity,
           },
-        ]}
-      >
+        ]}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
-          bounces={false}
-        >
+          bounces={false}>
           <View style={styles.centered}>
             <Text style={styles.title}>Airtel Prepaid</Text>
-            <Text style={styles.subtitle}>Select a plan below to get started</Text>
+            <Text style={styles.subtitle}>
+              Select a plan below to get started
+            </Text>
 
             <View style={styles.additionalContent}>
-              {[{ title: 'Popular Plans', desc: 'Choose from our most popular prepaid plans with unlimited calling and high-speed data.' },
-              { title: 'Special Offers', desc: 'Get extra benefits with our special recharge offers. Limited time deals available.' },
-              { title: 'Data Add-ons', desc: 'Need more data? Choose from our flexible data add-on packs starting from ₹19.' },
-              { title: 'Roaming Plans', desc: 'Stay connected while traveling with our affordable international roaming plans.' },
-              { title: 'Family Plans', desc: 'Save more with family plans that offer shared data and calling benefits.' }].map((section, i) => (
+              {[
+                {
+                  title: 'Popular Plans',
+                  desc: 'Choose from our most popular prepaid plans with unlimited calling and high-speed data.',
+                },
+                {
+                  title: 'Special Offers',
+                  desc: 'Get extra benefits with our special recharge offers. Limited time deals available.',
+                },
+                {
+                  title: 'Data Add-ons',
+                  desc: 'Need more data? Choose from our flexible data add-on packs starting from ₹19.',
+                },
+                {
+                  title: 'Roaming Plans',
+                  desc: 'Stay connected while traveling with our affordable international roaming plans.',
+                },
+                {
+                  title: 'Family Plans',
+                  desc: 'Save more with family plans that offer shared data and calling benefits.',
+                },
+              ].map((section, i) => (
                 <View key={i}>
                   <Text style={styles.sectionTitle}>{section.title}</Text>
                   <Text style={styles.sectionDesc}>{section.desc}</Text>
@@ -133,11 +169,16 @@ function PostPaidScreen({ navigation }) {
       </Animated.View>
 
       <Animated.View
-        style={[styles.bottomSheet, { transform: [{ translateY: bottomSheetTranslateY }] }]}
-        {...panResponder.panHandlers}
-      >
+        style={[
+          styles.bottomSheet,
+          {transform: [{translateY: bottomSheetTranslateY}]},
+        ]}
+        {...panResponder.panHandlers}>
         {/* Touchable Handle to Toggle */}
-        <TouchableOpacity style={styles.handleArea} onPress={toggleSheet} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.handleArea}
+          onPress={toggleSheet}
+          activeOpacity={0.8}>
           <View style={styles.handle} />
         </TouchableOpacity>
 
@@ -156,20 +197,21 @@ function PostPaidScreen({ navigation }) {
             showsVerticalScrollIndicator
             nestedScrollEnabled
             scrollEnabled={isExpanded}
-            onScroll={(e) => {
+            onScroll={e => {
               scrollOffset.current = e.nativeEvent.contentOffset.y;
               if (scrollOffset.current > 10 && !isExpanded) {
                 setIsExpanded(true);
                 animateSheet(EXPANDED_HEIGHT);
               }
             }}
-            scrollEventThrottle={16}
-          >
+            scrollEventThrottle={16}>
             {plans.map((plan, index) => (
               <TouchableOpacity key={index} style={styles.card}>
                 <Text style={styles.planPrice}>₹{plan.price}</Text>
                 <Text style={styles.planDetail}>Talktime: ₹0</Text>
-                <Text style={styles.planDetail}>Validity: {plan.validity} days</Text>
+                <Text style={styles.planDetail}>
+                  Validity: {plan.validity} days
+                </Text>
                 <Text style={styles.planDesc}>{plan.desc}</Text>
               </TouchableOpacity>
             ))}
@@ -330,5 +372,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostPaidScreen
-
+export default PostPaidScreen;

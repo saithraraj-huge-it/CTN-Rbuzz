@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useContext } from 'react';
-import { View, Animated, StyleSheet, Easing } from 'react-native';
-import { useTheme } from '../../contexts/ThemeContext';
+import React, {useRef, useEffect, useContext} from 'react';
+import {View, Animated, StyleSheet, Easing} from 'react-native';
+import {useTheme} from '../../contexts/ThemeContext';
 
 const Skeleton = ({
-  type = 'line',              // 'line' | 'circle' | 'square' | 'custom'
+  type = 'line', // 'line' | 'circle' | 'square' | 'custom'
   width = '100%',
   height = 16,
   borderRadius,
@@ -11,7 +11,7 @@ const Skeleton = ({
   animate = true,
 }) => {
   const shimmer = useRef(new Animated.Value(0)).current;
- const { theme } = useTheme();
+  const {theme} = useTheme();
   const baseColor = theme.colors.skeleton;
   const highlightColor = theme.colors.skeletonHighlight;
 
@@ -23,7 +23,7 @@ const Skeleton = ({
         duration: 1000,
         easing: Easing.linear,
         useNativeDriver: true,
-      })
+      }),
     );
     loop.start();
     return () => loop.stop();
@@ -62,11 +62,10 @@ const Skeleton = ({
     <View
       style={[
         styles.container,
-        { backgroundColor: baseColor, overflow: 'hidden' },
+        {backgroundColor: baseColor, overflow: 'hidden'},
         getShapeStyle(),
         style,
-      ]}
-    >
+      ]}>
       {animate && (
         <Animated.View
           style={[
@@ -74,7 +73,7 @@ const Skeleton = ({
             {
               backgroundColor: highlightColor,
               opacity: 0.3,
-              transform: [{ translateX }],
+              transform: [{translateX}],
             },
           ]}
         />

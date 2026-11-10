@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,19 +7,19 @@ import {
   RefreshControl,
 } from 'react-native';
 import InlineDateRangePicker from '../../components/ui/InlineDateRange';
-import { Button } from '../../components/ui/Button';
-import { useTheme } from '../../contexts/ThemeContext';
-import { useData } from '../../contexts/DataProvider';
+import {Button} from '../../components/ui/Button';
+import {useTheme} from '../../contexts/ThemeContext';
+import {useData} from '../../contexts/DataProvider';
 import dayjs from 'dayjs';
 import Icons from '../../theme/IconsProvider';
 import HistoryCard from './HistoryCard/PrePaidHisCard';
 import Header from '../../components/layout/Header';
 
-const RechargeReportScreen = ({ navigation }) => {
-  const { theme } = useTheme();
-  const { getRechargeReport } = useData();
+const RechargeReportScreen = ({navigation}) => {
+  const {theme} = useTheme();
+  const {getRechargeReport} = useData();
 
- const today = dayjs().format('YYYY-MM-DD');
+  const today = dayjs().format('YYYY-MM-DD');
 
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
@@ -63,15 +63,15 @@ const RechargeReportScreen = ({ navigation }) => {
     setRefreshing(false);
   };
 
-  const renderHistoryItem = ({ item }) => {
+  const renderHistoryItem = ({item}) => {
     const mappedItem = {
       INM: item.INM,
       ANM: item.ANM,
       SNM: item.SNM,
       CDT: item.CDT,
-      SPN:item.SPN,
-      MNO:item.MNO,
-      AMT:item.AMT
+      SPN: item.SPN,
+      MNO: item.MNO,
+      AMT: item.AMT,
     };
 
     return <HistoryCard item={mappedItem} theme={theme} />;
@@ -79,8 +79,8 @@ const RechargeReportScreen = ({ navigation }) => {
 
   const renderHistoryLoading = () => {
     return (
-      <View style={{ paddingVertical: 8, paddingHorizontal: 0 }}>
-        {Array.from({ length: 10 }).map((_, idx) => (
+      <View style={{paddingVertical: 8, paddingHorizontal: 0}}>
+        {Array.from({length: 10}).map((_, idx) => (
           <HistoryCard key={idx} loading theme={theme} />
         ))}
       </View>
@@ -88,7 +88,7 @@ const RechargeReportScreen = ({ navigation }) => {
   };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: theme.colors.background }}>
+    <View className="flex-1" style={{backgroundColor: theme.colors.background}}>
       <Header
         title="Recharge Report"
         showBack
@@ -96,93 +96,83 @@ const RechargeReportScreen = ({ navigation }) => {
         onBackPress={() => navigation.goBack()}
       />
       <View className="flex-1 p-4">
-        
         <View
-  style={{
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-    gap: 6,
-    flexWrap: 'nowrap',
-  }}
->
-  <TouchableOpacity
-    onPress={() => {
-      setCurrentPicker('start');
-      setPickerVisible(true);
-    }}
-    style={{
-      flex: 1,
-      paddingVertical: 8,
-      borderRadius: 8,
-      alignItems: 'center',
-      backgroundColor: theme.colors.primaryLight,
-    }}
-  >
-    <Text
-      numberOfLines={1}
-      style={{
-        color: theme.colors.text,
-        fontFamily: theme.typography.fontFamily.medium,
-        fontSize: theme.typography.fontSize.s,
-      }}
-    >
-      {dayjs(startDate).format('DD-MM-YYYY')}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 12,
+            gap: 6,
+            flexWrap: 'nowrap',
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              setCurrentPicker('start');
+              setPickerVisible(true);
+            }}
+            style={{
+              flex: 1,
+              paddingVertical: 8,
+              borderRadius: 8,
+              alignItems: 'center',
+              backgroundColor: theme.colors.primaryLight,
+            }}>
+            <Text
+              numberOfLines={1}
+              style={{
+                color: theme.colors.text,
+                fontFamily: theme.typography.fontFamily.medium,
+                fontSize: theme.typography.fontSize.s,
+              }}>
+              {dayjs(startDate).format('DD-MM-YYYY')}
+            </Text>
+          </TouchableOpacity>
 
-    </Text>
-  </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setCurrentPicker('end');
+              setPickerVisible(true);
+            }}
+            style={{
+              flex: 1,
+              paddingVertical: 8,
+              borderRadius: 8,
+              alignItems: 'center',
+              backgroundColor: theme.colors.primaryLight,
+            }}>
+            <Text
+              numberOfLines={1}
+              style={{
+                color: theme.colors.text,
+                fontFamily: theme.typography.fontFamily.medium,
+                fontSize: theme.typography.fontSize.s,
+              }}>
+              {dayjs(endDate).format('DD-MM-YYYY')}
+            </Text>
+          </TouchableOpacity>
 
-  <TouchableOpacity
-    onPress={() => {
-      setCurrentPicker('end');
-      setPickerVisible(true);
-    }}
-    style={{
-      flex: 1,
-      paddingVertical: 8,
-      borderRadius: 8,
-      alignItems: 'center',
-      backgroundColor: theme.colors.primaryLight,
-    }}
-  >
-    <Text
-      numberOfLines={1}
-      style={{
-        color: theme.colors.text,
-        fontFamily: theme.typography.fontFamily.medium,
-        fontSize: theme.typography.fontSize.s,
-      }}
-    >
-      {dayjs(endDate).format('DD-MM-YYYY')}
+          <View style={{flexShrink: 1}}>
+            <Button
+              title="Apply"
+              onPress={handleFilter}
+              theme={theme}
+              size="small"
+            />
+          </View>
 
-    </Text>
-  </TouchableOpacity>
-
-  <View style={{ flexShrink: 1 }}>
-    <Button
-      title="Apply"
-      onPress={handleFilter}
-      theme={theme}
-      size="small"
-    />
-  </View>
-
-  <TouchableOpacity
-    onPress={handleReset}
-    style={{
-      width: 36,
-      height: 36,
-      backgroundColor: theme.colors.primary,
-      borderRadius: 8,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
-    }}
-  >
-    <Icons icon="ResetIcon" size={18} color={theme.colors.primary} />
-  </TouchableOpacity>
-</View>
-
+          <TouchableOpacity
+            onPress={handleReset}
+            style={{
+              width: 36,
+              height: 36,
+              backgroundColor: theme.colors.primary,
+              borderRadius: 8,
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+            <Icons icon="ResetIcon" size={18} color={theme.colors.primary} />
+          </TouchableOpacity>
+        </View>
 
         {pickerVisible && (
           <InlineDateRangePicker
@@ -204,7 +194,7 @@ const RechargeReportScreen = ({ navigation }) => {
             data={reports}
             keyExtractor={(item, index) => index.toString()}
             renderItem={renderHistoryItem}
-            contentContainerStyle={{ paddingBottom: 80 }}
+            contentContainerStyle={{paddingBottom: 80}}
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl
@@ -221,10 +211,9 @@ const RechargeReportScreen = ({ navigation }) => {
                   marginTop: 20,
                   color: theme.colors.textSecondary,
                   fontFamily: theme.typography.fontFamily.regular,
-                   fontSize:theme.typography.fontSize.m
-                }}
-              >
-          No records found
+                  fontSize: theme.typography.fontSize.m,
+                }}>
+                No records found
               </Text>
             }
           />

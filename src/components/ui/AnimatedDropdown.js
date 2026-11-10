@@ -1,5 +1,4 @@
-
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -13,8 +12,7 @@ import {
 
 import Icon from '../../theme/IconsProvider';
 
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } =
-  Dimensions.get('window');
+const {height: SCREEN_HEIGHT, width: SCREEN_WIDTH} = Dimensions.get('window');
 
 const ITEM_HEIGHT = 48;
 const MAX_DROPDOWN_HEIGHT = SCREEN_HEIGHT * 0.4;
@@ -54,40 +52,30 @@ const AnimatedDropdown = ({
       return;
     }
 
-    buttonRef.current?.measureInWindow(
-      (x, y, width, height) => {
-        const dropdownHeight = Math.min(
-          MAX_DROPDOWN_HEIGHT,
-          Math.max(ITEM_HEIGHT, options.length * ITEM_HEIGHT)
-        );
+    buttonRef.current?.measureInWindow((x, y, width, height) => {
+      const dropdownHeight = Math.min(
+        MAX_DROPDOWN_HEIGHT,
+        Math.max(ITEM_HEIGHT, options.length * ITEM_HEIGHT),
+      );
 
-        const spaceBelow = SCREEN_HEIGHT - (y + height);
-        const openAbove = spaceBelow < dropdownHeight;
+      const spaceBelow = SCREEN_HEIGHT - (y + height);
+      const openAbove = spaceBelow < dropdownHeight;
 
-        let top = openAbove
-          ? y - dropdownHeight
-          : y + height;
+      let top = openAbove ? y - dropdownHeight : y + height;
 
-        top = Math.max(
-          0,
-          Math.min(top, SCREEN_HEIGHT - dropdownHeight)
-        );
+      top = Math.max(0, Math.min(top, SCREEN_HEIGHT - dropdownHeight));
 
-        const left = Math.max(
-          0,
-          Math.min(x, SCREEN_WIDTH - width)
-        );
+      const left = Math.max(0, Math.min(x, SCREEN_WIDTH - width));
 
-        setDropdownPosition({
-          top,
-          left,
-          width,
-          height: dropdownHeight,
-        });
+      setDropdownPosition({
+        top,
+        left,
+        width,
+        height: dropdownHeight,
+      });
 
-        setActiveDropdown(id);
-      }
-    );
+      setActiveDropdown(id);
+    });
   };
 
   const handleSelect = item => {
@@ -100,7 +88,7 @@ const AnimatedDropdown = ({
     }, 150);
   };
 
-  const renderItem = ({ item, index }) => (
+  const renderItem = ({item, index}) => (
     <TouchableOpacity
       activeOpacity={0.6}
       onPress={() => handleSelect(item)}
@@ -109,19 +97,16 @@ const AnimatedDropdown = ({
         paddingHorizontal: 16,
         justifyContent: 'center',
         backgroundColor: theme.colors.card,
-        borderBottomWidth:
-          index === options.length - 1 ? 0 : 0.5,
+        borderBottomWidth: index === options.length - 1 ? 0 : 0.5,
         borderBottomColor: '#E5E7EB',
-      }}
-    >
+      }}>
       <Text
         style={{
           color: theme.colors.text,
           fontFamily: theme.typography.fontFamily.regular,
           fontSize: theme.typography.fontSize.s,
         }}
-        allowFontScaling={false}
-      >
+        allowFontScaling={false}>
         {item.label}
       </Text>
     </TouchableOpacity>
@@ -129,7 +114,6 @@ const AnimatedDropdown = ({
 
   return (
     <View className="w-full relative mb-4">
-
       {/* DROPDOWN BUTTON */}
 
       <TouchableOpacity
@@ -139,28 +123,20 @@ const AnimatedDropdown = ({
         className="w-full px-4 py-3 rounded-lg border flex-row items-center justify-between"
         style={{
           backgroundColor: theme.colors.primaryLight,
-          borderColor: error
-            ? theme.colors.error
-            : theme.colors.primaryLight,
+          borderColor: error ? theme.colors.error : theme.colors.primaryLight,
           minHeight: 55,
-        }}
-      >
+        }}>
         <Text
           style={{
             fontFamily: theme.typography.fontFamily.regular,
             color: selected ? '#000' : theme.colors.textSecondary,
             fontSize: theme.typography.fontSize.m,
           }}
-          allowFontScaling={false}
-        >
+          allowFontScaling={false}>
           {selected?.label ?? placeholder}
         </Text>
 
-        <Icon
-          icon="downArrow"
-          size={20}
-          color={theme.colors.text}
-        />
+        <Icon icon="downArrow" size={20} color={theme.colors.text} />
       </TouchableOpacity>
 
       {/* ERROR */}
@@ -172,8 +148,7 @@ const AnimatedDropdown = ({
             marginTop: 4,
             fontFamily: theme.typography.fontFamily.regular,
             fontSize: theme.typography.fontSize.xs,
-          }}
-        >
+          }}>
           {error}
         </Text>
       )}
@@ -185,10 +160,8 @@ const AnimatedDropdown = ({
         transparent
         animationType="none"
         statusBarTranslucent
-        onRequestClose={closeDropdown}
-      >
-        <View style={{ flex: 1 }}>
-
+        onRequestClose={closeDropdown}>
+        <View style={{flex: 1}}>
           {/* OUTSIDE CLICK */}
 
           <Pressable
@@ -216,31 +189,25 @@ const AnimatedDropdown = ({
               overflow: 'hidden',
               elevation: 15,
               shadowColor: '#000',
-              shadowOffset: { width: 0, height: 4 },
+              shadowOffset: {width: 0, height: 4},
               shadowOpacity: 0.2,
               shadowRadius: 8,
-            }}
-          >
+            }}>
             {loading ? (
               <View
                 style={{
                   flex: 1,
                   justifyContent: 'center',
                   alignItems: 'center',
-                }}
-              >
-                <ActivityIndicator
-                  size="small"
-                  color={theme.colors.primary}
-                />
+                }}>
+                <ActivityIndicator size="small" color={theme.colors.primary} />
 
                 <Text
                   style={{
                     marginTop: 10,
                     color: theme.colors.textSecondary,
                     fontFamily: theme.typography.fontFamily.regular,
-                  }}
-                >
+                  }}>
                   Loading...
                 </Text>
               </View>
@@ -269,14 +236,12 @@ const AnimatedDropdown = ({
                       height: ITEM_HEIGHT,
                       justifyContent: 'center',
                       alignItems: 'center',
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         color: theme.colors.textSecondary,
                         fontFamily: theme.typography.fontFamily.regular,
-                      }}
-                    >
+                      }}>
                       No options available
                     </Text>
                   </View>
